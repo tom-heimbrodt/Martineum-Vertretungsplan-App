@@ -9,7 +9,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/color3">
 
         <TextView
             android:layout_width="wrap_content"
@@ -26,15 +27,20 @@
             android:id="@+id/fragment_vertretungsplan_title"
 
             android:textSize="36sp"
-            android:textColor="@color/color1"
-            android:text="..."/>
+            android:textColor="#FFE0E0E0"
+            android:text="..."
+
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:clickable="true"
+            android:onClick="layoutClicked"/>
 
         </RelativeLayout>
 
     <ExpandableListView
         android:id="@+id/exp_list_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:visibility="gone"
         android:animateLayoutChanges="false"
         android:animationCache="false"
