@@ -33,6 +33,11 @@ public class VertretungsplanFragment extends Fragment
         position = this.getArguments().getInt("POSITION");
     }
 
+    public float getTitleHeight()
+    {
+        return ueberschrift.getY() + ueberschrift.getHeight();
+    }
+
      @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {

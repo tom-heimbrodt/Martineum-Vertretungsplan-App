@@ -25,15 +25,6 @@ public class VertretungsplanApp extends Application
         taskManager = new AsyncTaskManager(this);
     }
 
-    public void dispose()
-    {
-        taskManager = null;
-        synchronizer = null;
-        singleton = null;
-
-        System.exit(0);
-    }
-
     public Vertretungsplan getVertretungsplan(int index)
     { return synchronizer.getVertretungsplan(index); }
     public void setVertretungsplan(int index, Vertretungsplan vertretungsplan)

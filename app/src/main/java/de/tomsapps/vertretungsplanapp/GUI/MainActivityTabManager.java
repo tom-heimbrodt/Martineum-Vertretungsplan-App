@@ -48,7 +48,7 @@ public class MainActivityTabManager extends FragmentStatePagerAdapter implements
     }
 
     @Override
-    public Fragment getItem(int i)
+    public VertretungsplanFragment getItem(int i)
     // gibt ein vorhandenes oder neu erstelltes Fragment zurück
     {
         // Fragment zurückgeben
