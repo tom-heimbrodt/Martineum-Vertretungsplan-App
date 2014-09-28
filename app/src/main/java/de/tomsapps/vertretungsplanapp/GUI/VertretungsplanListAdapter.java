@@ -128,13 +128,6 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
         return childPosition;
     }
 
-    /**
-     * Indicates whether the child and group IDs are stable across changes to the
-     * underlying data.
-     *
-     * @return whether or not the same ID always refers to the same object
-     * Adapter # hasStableIds()
-     */
     @Override
     public boolean hasStableIds()
     {

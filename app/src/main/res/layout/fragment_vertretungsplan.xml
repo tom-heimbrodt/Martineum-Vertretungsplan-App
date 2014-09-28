@@ -31,9 +31,7 @@
             android:text="..."
 
             android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:clickable="true"
-            android:onClick="layoutClicked"/>
+            android:layout_marginRight="30dp"/>
 
         </RelativeLayout>
 
