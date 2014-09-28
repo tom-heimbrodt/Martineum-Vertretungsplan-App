@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="de.tomsapps.vertretungsplanapp.GUI.MainActivity" >
+    <item android:id="@+id/action_montag"
+        android:title="Montag"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+    <item android:id="@+id/action_dienstag"
+          android:title="Dienstag"
+          android:orderInCategory="100"
+          android:showAsAction="never" />
+    <item android:id="@+id/action_mittwoch"
+          android:title="Mittwoch"
+          android:orderInCategory="100"
+          android:showAsAction="never" />
+    <item android:id="@+id/action_donnerstag"
+          android:title="Donnerstag"
+          android:orderInCategory="100"
+          android:showAsAction="never" />
+    <item android:id="@+id/action_freitag"
+          android:title="Freitag"
+          android:orderInCategory="100"
+          android:showAsAction="never"/>
+</menu>
