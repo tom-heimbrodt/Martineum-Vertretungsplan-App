@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -18,6 +19,7 @@ public class MainActivity extends FragmentActivity
     public static MainActivityTabManager tabManager;
     VertretungsplanApp application;
     ViewPager viewPager;
+    View dropDownMenuView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -32,6 +34,7 @@ public class MainActivity extends FragmentActivity
         application = (VertretungsplanApp) this.getApplication();
         // Layout aus der Layoutdatei laden.
         this.setContentView(R.layout.activity_main);
+        dropDownMenuView = findViewById(R.id.activity_main_drop_down_menu);
         // ViewPager und TabManager initialisieren
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         viewPager.setAdapter(tabManager = new MainActivityTabManager(this.getSupportFragmentManager(), application, this));
@@ -69,5 +72,48 @@ public class MainActivity extends FragmentActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean isMenuDown = false;
+    public void toggleDropDownMenu()
+    {
+        if (!isMenuDown)
+            viewPager.animate().translationY(dropDownMenuView.getHeight());
+        else
+            viewPager.animate().translationY(0);
+        isMenuDown = !isMenuDown;
+    }
+
+    public void layoutClicked(View view)
+    {
+        int id = view.getId();
+        switch (id)
+        {
+            case R.id.fragment_vertretungsplan_title:
+                toggleDropDownMenu();
+                break;
+            case R.id.button01:
+                viewPager.setCurrentItem(0, true);
+                toggleDropDownMenu();
+                break;
+            case R.id.button02:
+                viewPager.setCurrentItem(1, true);
+                toggleDropDownMenu();
+                break;
+            case R.id.button03:
+                viewPager.setCurrentItem(2, true);
+                toggleDropDownMenu();
+                break;
+            case R.id.button04:
+                viewPager.setCurrentItem(3, true);
+                toggleDropDownMenu();
+                break;
+            case R.id.button05:
+                viewPager.setCurrentItem(4, true);
+                toggleDropDownMenu();
+                break;
+            case R.id.button06:
+                break;
+        }
     }
 }

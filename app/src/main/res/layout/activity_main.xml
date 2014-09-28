@@ -1,10 +1,77 @@
-<android.support.v4.view.ViewPager
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/view_pager"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color3"
-    >
+    android:layout_width="match_parent"
+    android:orientation="vertical">
 
-</android.support.v4.view.ViewPager>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="30dp"
+        android:id="@+id/activity_main_drop_down_menu"
+        android:visibility="visible">
+
+        <Button
+            style="?android:attr/segmentedButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/button01"
+            android:onClick="layoutClicked"
+            android:text="Montag"/>
+
+        <Button
+            style="?android:attr/segmentedButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button01"
+            android:id="@+id/button02"
+            android:onClick="layoutClicked"
+            android:text="Dienstag"/>
+
+        <Button
+            style="?android:attr/segmentedButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button02"
+            android:id="@+id/button03"
+            android:onClick="layoutClicked"
+            android:text="Mittwoch"/>
+
+        <Button
+            style="?android:attr/segmentedButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button03"
+            android:id="@+id/button04"
+            android:onClick="layoutClicked"
+            android:text="Donnerstag"/>
+
+        <Button
+            style="?android:attr/segmentedButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button04"
+            android:id="@+id/button05"
+            android:onClick="layoutClicked"
+            android:text="Freitag"/>
+
+        <Button
+            style="?android:attr/segmentedButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button05"
+            android:id="@+id/button06"
+            android:onClick="layoutClicked"
+            android:visibility="gone"
+            android:text="Einstellungen"/>
+
+        </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color3">
+
+    </android.support.v4.view.ViewPager>
+</FrameLayout>

@@ -10,7 +10,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="Martineum Vertretungsplan App"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".GUI.MainActivity"
             android:label="@string/title_activity_main">
