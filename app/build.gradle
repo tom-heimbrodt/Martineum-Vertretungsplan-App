@@ -8,8 +8,8 @@ android {
         applicationId "de.tomsapps.vertretungsplanapp"
         minSdkVersion 15
         targetSdkVersion 15
-        versionCode 3
-        versionName "BETA 2 (0.2.1)"
+        versionCode 4
+        versionName "BETA 2 (0.2.2)"
     }
     buildTypes {
         release {
