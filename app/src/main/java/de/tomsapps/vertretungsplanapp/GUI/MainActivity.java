@@ -62,11 +62,6 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
     }
 
     @Override
-    public void onAttachFragment(Fragment f)
-    {
-    }
-
-    @Override
     public boolean onMenuOpened(int featureId, Menu menu)
     // Wird durch den Menu-Button ausgelöst
     {
