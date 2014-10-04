@@ -4,6 +4,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerAdapter;
+import android.view.View;
+import android.view.ViewGroup;
 
 import de.tomsapps.vertretungsplanapp.StaticSupportAlgorithms.OtherAlgorithms;
 import de.tomsapps.vertretungsplanapp.TaskManagement.AsyncTaskManager;
@@ -11,7 +15,7 @@ import de.tomsapps.vertretungsplanapp.TaskManagement.ITaskOwner;
 import de.tomsapps.vertretungsplanapp.TaskManagement.Task;
 import de.tomsapps.vertretungsplanapp.Core.VertretungsplanApp;
 
-public class MainActivityTabManager extends FragmentStatePagerAdapter implements ITaskOwner
+public class MainActivityTabManager extends PagerAdapter implements ITaskOwner
 // Verwaltet die Vertretungsplantabs der Aktivität.
 {
     // Zwischenspeierung der Fragments, damit diese nicht immer wieder neu erzeugt werden müssen
@@ -20,15 +24,16 @@ public class MainActivityTabManager extends FragmentStatePagerAdapter implements
     VertretungsplanApp application;
     AsyncTaskManager taskManager;
     MainActivity activity;
+    FragmentManager fragmentManager;
 
     public MainActivityTabManager(FragmentManager fragmentManager, VertretungsplanApp application, MainActivity activity)
     // Konstruktor
     {
-        super(fragmentManager);
         // Verweise speichern
         this.application = application;
         this.taskManager = application.getApplicationTaskManager();
         this.activity = activity;
+        this.fragmentManager = fragmentManager;
         // Vertretungspläne asynchron aktualisieren
         taskManager.addTask(new Task(this, "DOWNLOAD", "Montag"));
         taskManager.addTask(new Task(this, "DOWNLOAD", "Dienstag"));
@@ -48,6 +53,27 @@ public class MainActivityTabManager extends FragmentStatePagerAdapter implements
     }
 
     @Override
+    public Fragment instantiateItem(ViewGroup container, int position)
+    {
+        Fragment fragment = getItem(position);
+        FragmentTransaction trans = fragmentManager.beginTransaction();
+        trans.add(container.getId(),fragment,"fragment:"+position);
+        trans.commit();
+        return fragment;
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object)
+    {
+        if (0 <= position && position < fragments.length)
+        {
+            FragmentTransaction trans = fragmentManager.beginTransaction();
+            trans.remove(fragments[position]);
+            trans.commit();
+            fragments[position] = null;
+        }
+    }
+
     public VertretungsplanFragment getItem(int i)
     // gibt ein vorhandenes oder neu erstelltes Fragment zurück
     {
@@ -71,6 +97,12 @@ public class MainActivityTabManager extends FragmentStatePagerAdapter implements
     public int getCount()
     // gibt die Anzahl der Fragments zurück
     { return 5; }
+
+    @Override
+    public boolean isViewFromObject(View view, Object fragment)
+    {
+        return ((Fragment) fragment).getView() == view;
+    }
 
     @Override
     public void taskFinished(final Task task, boolean successfully)

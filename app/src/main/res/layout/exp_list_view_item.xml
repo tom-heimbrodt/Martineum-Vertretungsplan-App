@@ -73,7 +73,7 @@
             android:layout_alignParentBottom="true"
 
             android:gravity="right"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="15dp"
             android:textColor="@color/color3"
             android:textStyle="italic"
             android:textSize="14sp"

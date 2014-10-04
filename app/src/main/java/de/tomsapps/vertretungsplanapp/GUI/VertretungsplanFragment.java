@@ -21,6 +21,8 @@ public class VertretungsplanFragment extends Fragment
     TextView ueberschrift;
     VertretungsplanListAdapter listViewAdapter;
 
+    MainActivityTabManager tabManager;
+
     public VertretungsplanFragment()
     {
         super();
@@ -30,17 +32,30 @@ public class VertretungsplanFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        MainActivity activity = (MainActivity) this.getActivity();
+        tabManager = activity.tabManager;
         position = this.getArguments().getInt("POSITION");
     }
 
     public float getTitleHeight()
     {
-        return ueberschrift.getY() + ueberschrift.getHeight();
+        float ueberschriftY = ueberschrift.getY();
+        float ueberschriftHeight = ueberschrift.getHeight();
+        return ueberschriftHeight + ueberschriftY;
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
     }
 
      @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        boolean attached = this.isAdded();
+        boolean visible = this.isVisible();
+
         View rootView = inflater.inflate(R.layout.fragment_vertretungsplan, container, false);
         ueberschrift = (TextView) rootView.findViewById(R.id.fragment_vertretungsplan_title);
         ueberschrift.setText(getDayOfWeek(position));
