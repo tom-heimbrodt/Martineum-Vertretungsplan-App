@@ -145,7 +145,8 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
         TextView textView1 = (TextView) convertView.findViewById(R.id.exp_list_view_group_text1);
         textView1.setText(groups.get(groupPosition).name);
         TextView textView2 = (TextView) convertView.findViewById(R.id.exp_list_view_group_text2);
-        textView2.setText(groups.get(groupPosition).unitsSize + " Änderungen");
+        int anzahlAenderungen = groups.get(groupPosition).unitsSize;
+        textView2.setText(anzahlAenderungen + ((anzahlAenderungen == 1)? " Änderung" : " Änderungen"));
         return convertView;
     }
 

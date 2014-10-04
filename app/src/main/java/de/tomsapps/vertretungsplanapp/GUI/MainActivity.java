@@ -3,7 +3,9 @@ package de.tomsapps.vertretungsplanapp.GUI;
 import android.app.ActionBar;
 import android.gesture.GestureOverlayView;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.view.Menu;
@@ -36,7 +38,7 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
     // Wird aufgerufen, wenn die Aktivität erstellt wird.
     {
         // Basisklasse initialisieren und benötigte Verweise ertsellen
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
         application = (VertretungsplanApp) this.getApplication();
         mainWindow  = this.getWindow();
 
@@ -55,7 +57,13 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
         viewPager        = (ViewPager)          findViewById(R.id.view_pager);
 
         gestureOverlay.setOnTouchListener(this);
+        viewPager.setOffscreenPageLimit(5);
         viewPager.setAdapter(tabManager = new MainActivityTabManager(this.getSupportFragmentManager(), application, this));
+    }
+
+    @Override
+    public void onAttachFragment(Fragment f)
+    {
     }
 
     @Override
@@ -79,7 +87,7 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
     // Wird durch den Zurück-Button ausgelöst
     {
         if (isMenuDownFlag)
-            toggleDropDownMenu();
+            hideDropDownMenu();
         else
             this.finish();
     }
