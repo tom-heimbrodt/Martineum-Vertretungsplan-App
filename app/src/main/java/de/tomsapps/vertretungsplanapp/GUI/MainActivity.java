@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -61,31 +62,34 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
         viewPager.setAdapter(tabManager = new MainActivityTabManager(this.getSupportFragmentManager(), application, this));
     }
 
-    @Override
-    public boolean onMenuOpened(int featureId, Menu menu)
-    // Wird durch den Menu-Button ausgelöst
-    {
-        toggleDropDownMenu();
-        return false;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    // Menu muss erstellt werden, sonst wird onMenuOpened nicht ausgeführt
-    {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public void onBackPressed()
-    // Wird durch den Zurück-Button ausgelöst
-    {
-        if (isMenuDownFlag)
-            hideDropDownMenu();
-        else
-            this.finish();
-    }
+   @Override
+   public boolean dispatchKeyEvent(KeyEvent event)
+   // Wird ausgelöst, wenn eine Taste gedrückt wird.
+   // Gibt true zurück, wenn Ereignis nicht länger behandelt werden soll, ansonsten false
+   {
+       if (event.getAction() == KeyEvent.ACTION_UP)
+       {
+           int keyCode = event.getKeyCode();
+           switch (keyCode)
+           {
+               case KeyEvent.KEYCODE_BACK:
+                   if (isMenuDownFlag)
+                       hideDropDownMenu();
+                   else
+                       this.finish();
+                   return true;
+               case KeyEvent.KEYCODE_MENU:
+                   toggleDropDownMenu();
+                   return true;
+               case KeyEvent.KEYCODE_SEARCH:
+                   // Not Implemented yet.
+               default:
+                   return false;
+           }
+       }
+       else
+           return true;
+   }
 
     public void toggleDropDownMenu()
     {

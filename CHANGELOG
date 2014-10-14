@@ -1,0 +1,21 @@
+-- MARTINEUM VERTRETUNGSPLAN APP - CHANGELOG --
+
+0.2.3	BETA 2:
+	- Bugfix:
+		- Tastenabfrage überarbeitet
+
+0.2.2	BETA 2:
+	- Bugfix:
+		- Absturz beim Rotieren des Displays
+		  beseitigt
+	- kleinere Änderungen
+
+0.2.1	BETA 2:
+	- Dropdown-Menu kann mittels herrunterziegen
+	  geöfnet werden
+
+0.2	BETA:
+	- Dropdown-Menu hinzugefügt
+
+0.1	ALPHA:
+	- Grundversion der App
