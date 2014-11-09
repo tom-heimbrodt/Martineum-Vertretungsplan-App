@@ -1,4 +1,4 @@
-package de.tomsapps.vertretungsplanapp.Core;
+package de.tomsapps.vertretungsplanapp.core;
 
 public class VertretungsplanUnit
 // Eine Klasse, die eine Einheit, d.h. eine Zeile, des Vertretungsplanes repräsentiert.

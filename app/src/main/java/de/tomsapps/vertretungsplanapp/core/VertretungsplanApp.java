@@ -1,8 +1,8 @@
-package de.tomsapps.vertretungsplanapp.Core;
+package de.tomsapps.vertretungsplanapp.core;
 
 import android.app.Application;
 
-import de.tomsapps.vertretungsplanapp.TaskManagement.AsyncTaskManager;
+import de.tomsapps.vertretungsplanapp.taskmanagement.AsyncTaskManager;
 
 public class VertretungsplanApp extends Application
 // Hauptklase, welche die Anwedung an sich repräsentiert.
@@ -47,7 +47,7 @@ public class VertretungsplanApp extends Application
 
         public synchronized Vertretungsplan getVertretungsplan(int index)
         // gibt ein gewünschtes Vertretungsplan Objekt zurück
-        { return (index >= 0 && index <= 4)? vertretungsplaene[index] : null; }
+        { return vertretungsplaene[index]; }
 
         public synchronized void setVertretungsplan(int index, Vertretungsplan vertretungsplan)
         // ermöglicht es ein Vertretungsplan-Objekt zuzuweisen
@@ -58,7 +58,7 @@ public class VertretungsplanApp extends Application
 
         public synchronized String getVertretungsplanRawData(int index)
         // gibt den gewünschten Vertretungsplan-HTML-String zurück
-        { return (index >= 0 && index <= 4)? vertretungsplaeneRawData[index] : null; }
+        { return vertretungsplaeneRawData[index]; }
 
         public void setVertretungsplanRawData(int index, String vertretungsplanRawData)
         // ermöglicht es den Vertretungsplan-HTML-Code zuzuweisen

@@ -1,5 +1,11 @@
 -- MARTINEUM VERTRETUNGSPLAN APP - CHANGELOG --
 
+0.3.0	GAMMA:
+	- Singleton entfernt
+	- Abstürze bei ältenren Geräten [hoffentlich] minimiert
+	- Kommentare überarbeitet und ergänzt
+	-
+
 0.2.3	BETA 2:
 	- Bugfix:
 		- Tastenabfrage überarbeitet
