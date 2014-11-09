@@ -1,4 +1,4 @@
-package de.tomsapps.vertretungsplanapp.GUI;
+package de.tomsapps.vertretungsplanapp.gui;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,10 +9,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import de.tomsapps.vertretungsplanapp.Core.Vertretungsplan;
-import de.tomsapps.vertretungsplanapp.Core.VertretungsplanApp;
+import de.tomsapps.vertretungsplanapp.core.Vertretungsplan;
+import de.tomsapps.vertretungsplanapp.core.VertretungsplanApp;
 import de.tomsapps.vertretungsplanapp.R;
-import de.tomsapps.vertretungsplanapp.Core.VertretungsplanUnit;
+import de.tomsapps.vertretungsplanapp.core.VertretungsplanUnit;
 
 public class VertretungsplanListAdapter extends BaseExpandableListAdapter
 // Klasse, welcher für die initialisierung des ExpandableListView's verantwortlich ist.
@@ -24,7 +24,7 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
     int groupSize;
     Context context;
 
-    public VertretungsplanListAdapter(int vertretungsplanID, Context context)
+    public VertretungsplanListAdapter(int vertretungsplanID, Context context, VertretungsplanApp app)
     // Konstruktor.
     {
         // Wertzuweisungen.
@@ -32,14 +32,14 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
         this.context = context;
 
         // Gruppen initialisieren
-        initialize();
+        initialize(app);
     }
 
-    public void initialize()
+    public void initialize(VertretungsplanApp application)
     // Gruppen (re-)initialisieren.
     {
         // Referenz auf den Vertretungsplan erstellen.
-        Vertretungsplan vp = VertretungsplanApp.singleton.getVertretungsplan(vertretungsplanID);
+        Vertretungsplan vp = application.getVertretungsplan(vertretungsplanID);
         // In jeder Zeile nach Gruppen suchen, welche nicht schon vorhanden sind.
         for (int i = 0; i < vp.getUnitsSize(); i++)
         {
@@ -101,16 +101,12 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
     }
 
     @Override
-    public Object getGroup(int groupPosition)
-    {
-        return null;
-    }
+    public Object getGroup(int groupPosition) // -> wird von Anwendung nicht benötigt
+    {   return null;   }
 
     @Override
-    public Object getChild(int groupPosition, int childPosition)
-    {
-        return null;
-    }
+    public Object getChild(int groupPosition, int childPosition) // -> wird von Anwendung nicht benötigt
+    {   return null;   }
 
     @Override
     public long getGroupId(int groupPosition)
@@ -137,6 +133,7 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent)
     {
+        // Gibt neu erstelltes oder schon vorhandenes anzuzeigendes Layout zurück
         if (convertView == null)
         {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -146,13 +143,14 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
         textView1.setText(groups.get(groupPosition).name);
         TextView textView2 = (TextView) convertView.findViewById(R.id.exp_list_view_group_text2);
         int anzahlAenderungen = groups.get(groupPosition).unitsSize;
-        textView2.setText(anzahlAenderungen + ((anzahlAenderungen == 1)? " Änderung" : " Änderungen"));
+        textView2.setText(anzahlAenderungen + ((anzahlAenderungen == 1) ? " Änderung" : " Änderungen"));
         return convertView;
     }
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent)
     {
+        // Gibt neu erstelltes oder schon vorhandenes anzuzeigendes Layout zurück
         if (convertView == null)
         {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

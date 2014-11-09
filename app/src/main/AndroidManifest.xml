@@ -5,14 +5,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".Core.VertretungsplanApp"
+        android:name=".core.VertretungsplanApp"
         android:hasCode="true"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="Martineum Vertretungsplan App"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".GUI.MainActivity"
+            android:name=".gui.MainActivity"
             android:label="@string/title_activity_main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

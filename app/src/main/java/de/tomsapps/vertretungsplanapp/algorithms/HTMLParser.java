@@ -1,11 +1,11 @@
-package de.tomsapps.vertretungsplanapp.StaticSupportAlgorithms;
+package de.tomsapps.vertretungsplanapp.algorithms;
 
 import java.util.ArrayList;
 
-import de.tomsapps.vertretungsplanapp.Core.VertretungsplanUnit;
+import de.tomsapps.vertretungsplanapp.core.VertretungsplanUnit;
 
 public final class HTMLParser
-// Stellt statische Methoden zum entschlüsseln der Vertretungsplan-Daten
+// Stellt statische Funktionen zum extrahieren der Vertretungsplan-Daten
 // aus dem entsprechenden HTML-Code der Webseite bereit.
 {
     private HTMLParser() {}
@@ -14,6 +14,7 @@ public final class HTMLParser
     private static final String HTML_DATE_END   = "</span>";
 
     public static String parseVertretungsplanDatum(String HTMLData, int startSearchAt)
+    // Extrahiert das Datum aus dem HTML - Code
     {
         int datumStartIndex = HTMLData.indexOf(HTML_DATE_START, startSearchAt) + HTML_DATE_START.length();
         int datumEndIndex   = HTMLData.indexOf(HTML_DATE_END, datumStartIndex);
@@ -40,8 +41,15 @@ public final class HTMLParser
             nextIndex += HTML_UNIT_START.length();
             int endIndex = HTMLData.indexOf(HTML_UNIT_END, nextIndex);
             // VertretungsplanUnit generieren
-            VertretungsplanUnit unit = generateVertretungsplanUnit(HTMLData.substring(nextIndex, endIndex));
-            if (unit != null) units.add(unit);
+            try
+            {
+                VertretungsplanUnit unit = generateVertretungsplanUnit(HTMLData.substring(nextIndex, endIndex));
+                if (unit != null) units.add(unit);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
 
         return units;
@@ -71,11 +79,11 @@ public final class HTMLParser
             else if (s1 > s1NotFound && s2 > s2NotFound)
                 indexes[i * 2] = (s1 < s2) ? s1 : s2;
             else if (s1 == s1NotFound && s2 == s2NotFound)
-                return null;
+                throw new RuntimeException("Beim parsen des HTML - Codes ist ein Fehler aufgetreten.");
 
             // Endpunkt einlesen
             indexes[i * 2 + 1] = HTMLUnitData.indexOf(HTML_INFO_END, (i > 0) ? indexes[i * 2] : 0);
-            if (indexes[i * 2 + 1] == -1) return null;
+            if (indexes[i * 2 + 1] == -1) throw new RuntimeException("Beim parsen des HTML - Codes ist ein Fehler aufgetreten.");
         }
 
         // VertretungsplanUnit erstellen

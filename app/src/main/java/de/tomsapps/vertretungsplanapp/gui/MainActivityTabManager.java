@@ -1,19 +1,18 @@
-package de.tomsapps.vertretungsplanapp.GUI;
+package de.tomsapps.vertretungsplanapp.gui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
-import de.tomsapps.vertretungsplanapp.StaticSupportAlgorithms.OtherAlgorithms;
-import de.tomsapps.vertretungsplanapp.TaskManagement.AsyncTaskManager;
-import de.tomsapps.vertretungsplanapp.TaskManagement.ITaskOwner;
-import de.tomsapps.vertretungsplanapp.TaskManagement.Task;
-import de.tomsapps.vertretungsplanapp.Core.VertretungsplanApp;
+import de.tomsapps.vertretungsplanapp.algorithms.OtherAlgorithms;
+import de.tomsapps.vertretungsplanapp.taskmanagement.AsyncTaskManager;
+import de.tomsapps.vertretungsplanapp.taskmanagement.ITaskOwner;
+import de.tomsapps.vertretungsplanapp.taskmanagement.Task;
+import de.tomsapps.vertretungsplanapp.core.VertretungsplanApp;
 
 public class MainActivityTabManager extends PagerAdapter implements ITaskOwner
 // Verwaltet die Vertretungsplantabs der Aktivität.
@@ -54,6 +53,7 @@ public class MainActivityTabManager extends PagerAdapter implements ITaskOwner
 
     @Override
     public Fragment instantiateItem(ViewGroup container, int position)
+    // instanziert Fragment
     {
         Fragment fragment = getItem(position);
         FragmentTransaction trans = fragmentManager.beginTransaction();
@@ -64,6 +64,7 @@ public class MainActivityTabManager extends PagerAdapter implements ITaskOwner
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object)
+    // zerstört Fragment
     {
         if (0 <= position && position < fragments.length)
         {
@@ -104,23 +105,34 @@ public class MainActivityTabManager extends PagerAdapter implements ITaskOwner
         return ((Fragment) fragment).getView() == view;
     }
 
+    private Boolean errorDialogShown = false;
     @Override
-    public void taskFinished(final Task task, boolean successfully)
+    public void taskFinished(final Task task, final boolean successfully)
+    // wird von asynchron ausgeführten Aufträgen aufgerufen
+    //   -> aktualisiert Layout
     {
-        if (task.getArgs()[0].contentEquals("ANALYSE"))
+        activity.runOnUiThread(new Runnable()
         {
-            activity.runOnUiThread(new Runnable()
+            @Override
+            public void run()
             {
-                @Override
-                public void run()
+                if (task.getArgs()[0].contentEquals("ANALYSE"))
                 {
+
                     try
                     {
                         fragments[OtherAlgorithms.getIndexFromDay(task.getArgs()[1])].update();
                     }
-                    catch (Exception e) { }
+                    catch (Exception e) { e.printStackTrace(); }
+
                 }
-            });
-        }
+                else if (task.getArgs()[0].contentEquals("DOWNLOAD") && !successfully && !errorDialogShown)
+                {
+                    // wird ausgeführt, wenn weder Daten heruntergeladen noch aus dem intenen Speicher geholt werden konnten
+                    activity.showInfoDialog("Kritischer Fehler", "Es konnten keine Daten geladen werden, bitte überprüfe die Internetverbindung zum Server.");
+                    errorDialogShown = true;
+                }
+            }
+        });
     }
 }
