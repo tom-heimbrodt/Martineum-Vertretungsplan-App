@@ -44,16 +44,17 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
         for (int i = 0; i < vp.getUnitsSize(); i++)
         {
             VertretungsplanUnit unit = vp.getUnit(i);
+            String klasse = unit.getKlasse();
             ArrayList<String> unitGroupNames = new ArrayList<String>();
             // generate UnitGroupNames (durch ',' getrennte Klassen und weglassen der Kurse nach '/'
             int index = -1, pIndex = 0;
-            int endIndex = unit.klasse.indexOf("/");
-            if (endIndex == -1) endIndex = unit.klasse.length();
+            int endIndex = klasse.indexOf("/");
+            if (endIndex == -1) endIndex = klasse.length();
             do
             {
-                pIndex = index + 1; index = unit.klasse.indexOf(",", pIndex + 1);
+                pIndex = index + 1; index = klasse.indexOf(",", pIndex + 1);
 
-                unitGroupNames.add(unit.klasse.substring(pIndex, (index != -1)? index : endIndex));
+                unitGroupNames.add(klasse.substring(pIndex, (index != -1)? index : endIndex));
             }
             while (index != -1);
 
@@ -158,17 +159,17 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
         }
         ListGroup group = groups.get(groupPosition);
         TextView textView1 = (TextView) convertView.findViewById(R.id.exp_list_view_item_text1);
-        textView1.setText(group.units.get(childPosition).klasse);
+        textView1.setText(group.units.get(childPosition).getKlasse());
         TextView textView2 = (TextView) convertView.findViewById(R.id.exp_list_view_item_text2);
-        textView2.setText(group.units.get(childPosition).stunde);
+        textView2.setText(group.units.get(childPosition).getStunde());
         TextView textView3 = (TextView) convertView.findViewById(R.id.exp_list_view_item_text3);
-        textView3.setText(group.units.get(childPosition).fach);
+        textView3.setText(group.units.get(childPosition).getFach());
         TextView textView4 = (TextView) convertView.findViewById(R.id.exp_list_view_item_text4);
-        textView4.setText(group.units.get(childPosition).lehrer);
+        textView4.setText(group.units.get(childPosition).getLehrer());
         TextView textView5 = (TextView) convertView.findViewById(R.id.exp_list_view_item_text5);
-        textView5.setText(group.units.get(childPosition).raum);
+        textView5.setText(group.units.get(childPosition).getRaum());
         TextView textView6 = (TextView) convertView.findViewById(R.id.exp_list_view_item_text6);
-        textView6.setText(group.units.get(childPosition).info);
+        textView6.setText(group.units.get(childPosition).getInfo());
         return convertView;
     }
 

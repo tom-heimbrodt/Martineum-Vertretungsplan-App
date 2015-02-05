@@ -14,7 +14,7 @@ import de.tomsapps.vertretungsplanapp.taskmanagement.ITaskOwner;
 import de.tomsapps.vertretungsplanapp.taskmanagement.Task;
 import de.tomsapps.vertretungsplanapp.core.VertretungsplanApp;
 
-public class MainActivityTabManager extends PagerAdapter implements ITaskOwner
+public class MainActivityPageManager extends PagerAdapter
 // Verwaltet die Vertretungsplantabs der Aktivität.
 {
     // Zwischenspeierung der Fragments, damit diese nicht immer wieder neu erzeugt werden müssen
@@ -25,7 +25,7 @@ public class MainActivityTabManager extends PagerAdapter implements ITaskOwner
     MainActivity activity;
     FragmentManager fragmentManager;
 
-    public MainActivityTabManager(FragmentManager fragmentManager, VertretungsplanApp application, MainActivity activity)
+    public MainActivityPageManager(FragmentManager fragmentManager, VertretungsplanApp application, MainActivity activity)
     // Konstruktor
     {
         // Verweise speichern
@@ -33,22 +33,6 @@ public class MainActivityTabManager extends PagerAdapter implements ITaskOwner
         this.taskManager = application.getApplicationTaskManager();
         this.activity = activity;
         this.fragmentManager = fragmentManager;
-        // Vertretungspläne asynchron aktualisieren
-        taskManager.addTask(new Task(this, "DOWNLOAD", "Montag"));
-        taskManager.addTask(new Task(this, "DOWNLOAD", "Dienstag"));
-        taskManager.addTask(new Task(this, "DOWNLOAD", "Mittwoch"));
-        taskManager.addTask(new Task(this, "DOWNLOAD", "Donnerstag"));
-        taskManager.addTask(new Task(this, "DOWNLOAD", "Freitag"));
-        taskManager.addTask(new Task(this, "ANALYSE", "Montag"));
-        taskManager.addTask(new Task(this, "ANALYSE", "Dienstag"));
-        taskManager.addTask(new Task(this, "ANALYSE", "Mittwoch"));
-        taskManager.addTask(new Task(this, "ANALYSE", "Donnerstag"));
-        taskManager.addTask(new Task(this, "ANALYSE", "Freitag"));
-        taskManager.addTask(new Task(this, "SAVE_LOCAL", "Montag"));
-        taskManager.addTask(new Task(this, "SAVE_LOCAL", "Dienstag"));
-        taskManager.addTask(new Task(this, "SAVE_LOCAL", "Mittwoch"));
-        taskManager.addTask(new Task(this, "SAVE_LOCAL", "Donnerstag"));
-        taskManager.addTask(new Task(this, "SAVE_LOCAL", "Freitag"));
     }
 
     @Override
@@ -94,6 +78,12 @@ public class MainActivityTabManager extends PagerAdapter implements ITaskOwner
         }
     }
 
+    public void updateFragment(int fragmentIndex)
+    {
+        if (fragments[fragmentIndex] != null)
+            fragments[fragmentIndex].update();
+    }
+
     @Override
     public int getCount()
     // gibt die Anzahl der Fragments zurück
@@ -103,36 +93,5 @@ public class MainActivityTabManager extends PagerAdapter implements ITaskOwner
     public boolean isViewFromObject(View view, Object fragment)
     {
         return ((Fragment) fragment).getView() == view;
-    }
-
-    private Boolean errorDialogShown = false;
-    @Override
-    public void taskFinished(final Task task, final boolean successfully)
-    // wird von asynchron ausgeführten Aufträgen aufgerufen
-    //   -> aktualisiert Layout
-    {
-        activity.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                if (task.getArgs()[0].contentEquals("ANALYSE"))
-                {
-
-                    try
-                    {
-                        fragments[OtherAlgorithms.getIndexFromDay(task.getArgs()[1])].update();
-                    }
-                    catch (Exception e) { e.printStackTrace(); }
-
-                }
-                else if (task.getArgs()[0].contentEquals("DOWNLOAD") && !successfully && !errorDialogShown)
-                {
-                    // wird ausgeführt, wenn weder Daten heruntergeladen noch aus dem intenen Speicher geholt werden konnten
-                    activity.showInfoDialog("Kritischer Fehler", "Es konnten keine Daten geladen werden, bitte überprüfe die Internetverbindung zum Server.");
-                    errorDialogShown = true;
-                }
-            }
-        });
     }
 }

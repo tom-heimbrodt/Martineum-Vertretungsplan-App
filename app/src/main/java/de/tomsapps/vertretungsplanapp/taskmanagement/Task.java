@@ -25,52 +25,34 @@ public class Task
     public void runTaskSync(VertretungsplanApp app)
     // führt die Aufgabe synchron aus, d. h. der entsprechende Thread wird für die dauer der Ausführung blockiert
     {
-        try
-        {
+        try {
             if (args[0].contentEquals("DOWNLOAD"))
             // Schlüsselwort um Datein von Martineum Server herunterzuladen
             {
                 int index = OtherAlgorithms.getIndexFromDay(args[1]);
-                try
-                {
-                    // Zuerst versuchen aus dem Internet zu laden . . .
-                    app.setVertretungsplanRawData(index, EnvironmentInterfaces.Network.downloadData(EnvironmentInterfaces.Network.generateURL(index)));
-                }
-                catch (Exception e)
-                {
-                    try
-                    {
-                        // . . . dann aus dem lokalen Speicher . . .
-                        app.setVertretungsplanRawData(index, EnvironmentInterfaces.LokalStorage.loadData(args[1].toUpperCase() + "_HTML_DATA", app));
-                    }
-                    catch (Exception e2)
-                    {
-                        // . . . und dann ist auch schon Schluss!
-                        errorOccured = true;
-                    }
-                }
+                app.setVertretungsplanRawData(index, EnvironmentInterfaces.Network.downloadData(EnvironmentInterfaces.Network.generateURL(index)));
             }
-
-            else if (args[0].contentEquals("ANALYSE"))
+            else if (args[0].contentEquals("LOAD_LOCAL"))
+            // Schlüsselwort, um Daten aus dem lokalem Speicher zu laden
+            {
+                int index = OtherAlgorithms.getIndexFromDay(args[1]);
+                app.setVertretungsplanRawData(index, EnvironmentInterfaces.LokalStorage.loadData(args[1].toUpperCase() + "_HTML_DATA", app));
+            } else if (args[0].contentEquals("ANALYZE"))
             // Schlüsselwort um heruntergeladene Daten zu analysieren
             {
                 int index = OtherAlgorithms.getIndexFromDay(args[1]);
                 app.setVertretungsplan(index, new Vertretungsplan(app.getVertretungsplanRawData(index)));
             }
-
             else if (args[0].contentEquals("SAVE_LOCAL"))
             // Schlüsselwort um Daten lokal zu speichern
             {
                 int index = OtherAlgorithms.getIndexFromDay(args[1]);
-                if (app.getVertretungsplanRawData(index) != null && !app.getVertretungsplanRawData(index).isEmpty())
-                {
+                if (app.getVertretungsplanRawData(index) != null && !app.getVertretungsplanRawData(index).isEmpty()) {
                     EnvironmentInterfaces.LokalStorage.saveData(args[1].toUpperCase() + "_HTML_DATA", app.getVertretungsplanRawData(index), app);
                     app.setVertretungsplanRawData(index, null);
                 }
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             errorOccured = true;
         }
 
