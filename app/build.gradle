@@ -8,12 +8,12 @@ android {
         applicationId "de.tomsapps.vertretungsplanapp"
         minSdkVersion 4
         targetSdkVersion 21
-        versionCode 30
-        versionName "GAMMA (0.3.0)"
+        versionCode 1000
+        versionName "GAMMA STABLE (1.0.0)"
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

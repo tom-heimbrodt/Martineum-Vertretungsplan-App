@@ -1,16 +1,13 @@
 package de.tomsapps.vertretungsplanapp.gui;
 
-import android.animation.TimeInterpolator;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.gesture.GestureOverlayView;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -22,13 +19,17 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import de.tomsapps.vertretungsplanapp.R;
+import de.tomsapps.vertretungsplanapp.algorithms.OtherAlgorithms;
 import de.tomsapps.vertretungsplanapp.core.VertretungsplanApp;
+import de.tomsapps.vertretungsplanapp.taskmanagement.AsyncTaskManager;
+import de.tomsapps.vertretungsplanapp.taskmanagement.ITaskOwner;
+import de.tomsapps.vertretungsplanapp.taskmanagement.Task;
 
-public class MainActivity extends FragmentActivity implements  View.OnTouchListener
+public class MainActivity extends FragmentActivity implements  View.OnTouchListener, ITaskOwner
 // Hauptaktivität der Anwendung.
 {
     // globale Verweise
-    public MainActivityTabManager tabManager;
+    public MainActivityPageManager tabManager;
     private VertretungsplanApp    application;
     private Window                mainWindow;
     private ViewPager             viewPager;
@@ -68,7 +69,12 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
 
         // viewPager zeigt die Tabs an, die von tabManager verwaltet werden
         viewPager.setOffscreenPageLimit(5);
-        viewPager.setAdapter(tabManager = new MainActivityTabManager(this.getSupportFragmentManager(), application, this));
+        viewPager.setAdapter(tabManager = new MainActivityPageManager(this.getSupportFragmentManager(), application, this));
+
+        // VertretungsplÃ¤ne asynchron aktualisieren
+        AsyncTaskManager taskManager = application.getApplicationTaskManager();
+        taskManager.addTask(new Task(this, "DOWNLOAD", "Montag"));
+
     }
 
    @Override
@@ -208,7 +214,7 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
         return true;
     }
 
-    public void showInfoDialog(String title, String message)
+    public void showErrorDialog(String title, String message)
     // zeigt einen Informationsdialog an
     {
         try
@@ -234,6 +240,66 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
         catch (Exception e)
         {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void taskFinished(Task task, boolean successfully)
+    {
+        String[] args = task.getArgs();
+        if (args[0].contentEquals("DOWNLOAD"))
+        {
+            int index = OtherAlgorithms.getIndexFromDay(args[1]);
+            if (successfully)
+            {
+                if (index <= 3)
+                    // nÃ¤chsten Plan herunterladen
+                    application.getApplicationTaskManager().addTask(new Task(this, "DOWNLOAD", OtherAlgorithms.getDayOfWeek(index + 1)));
+                else
+                    application.getApplicationTaskManager().addTask(new Task(this, "ANALYZE", OtherAlgorithms.getDayOfWeek(0)));
+            }
+            else
+            {
+                application.getApplicationTaskManager().addTask(new Task(this, "LOAD_LOCAL", args[1]));
+            }
+        }
+        else if (args[0].contentEquals("LOAD_LOCAL"))
+        {
+            int index = OtherAlgorithms.getIndexFromDay(args[1]);
+            if (index <= 3 && successfully)
+                application.getApplicationTaskManager().addTask(new Task(this, "DOWNLOAD", OtherAlgorithms.getDayOfWeek(index + 1)));
+            else if (successfully)
+                application.getApplicationTaskManager().addTask(new Task(this, "ANALYZE", OtherAlgorithms.getDayOfWeek(0)));
+            else
+                showErrorDialog("Keine Datenquelle gefunden.", "Es konnten keine Daten geladen werden.\r\nÜberprüfe deine Internetverbindung.");
+        }
+        else if (args[0].contentEquals("ANALYZE"))
+        {
+            final int index = OtherAlgorithms.getIndexFromDay(args[1]);
+            if (successfully)
+            {
+                this.runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        try {
+                            tabManager.updateFragment(index);
+                        } catch(Exception e) { e.printStackTrace(); }
+                    }
+                });
+            }
+
+            if (index <= 3)
+                application.getApplicationTaskManager().addTask(new Task(this, "ANALYZE", OtherAlgorithms.getDayOfWeek(index + 1)));
+            else
+                application.getApplicationTaskManager().addTask(new Task(this, "SAVE_LOCAL", OtherAlgorithms.getDayOfWeek(0)));
+        }
+        else if (args[0].contentEquals("SAVE_LOCAL"))
+        {
+            int index = OtherAlgorithms.getIndexFromDay(args[1]);
+            if (index <= 3)
+                application.getApplicationTaskManager().addTask(new Task(this, "SAVE_LOCAL", OtherAlgorithms.getDayOfWeek(index + 1)));
         }
     }
 }

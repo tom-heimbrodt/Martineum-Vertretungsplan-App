@@ -6,8 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
 import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -28,7 +26,7 @@ public class VertretungsplanFragment extends Fragment
     VertretungsplanListAdapter listViewAdapter;
 
     MainActivity activity;
-    MainActivityTabManager tabManager;
+    MainActivityPageManager tabManager;
     VertretungsplanApp application;
 
     @Override
