@@ -11,4 +11,4 @@ Direkter Downloadlink
 ---------------------
 
 Die neueste direkt installierbare Version der App kann über diesen Link heruntergeladen werden:
-  https://github.com/tommy0010/Martineum-Vertretungsplan-App/blob/master/Martineum%20Vertretungsplan%20App.apk?raw=true
+  https://github.com/tom-heimbrodt/Martineum-Vertretungsplan-App/blob/master/Martineum%20Vertretungsplan%20App.apk?raw=true
