@@ -3,6 +3,7 @@ package de.tomsapps.vertretungsplanapp.gui;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.gesture.GestureOverlayView;
 import android.os.Build;
 import android.os.Bundle;
@@ -160,6 +161,13 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
             case R.id.button05:
                 viewPager.setCurrentItem(4, true);
                 hideDropDownMenu();
+                break;
+            case R.id.button_back:
+                hideDropDownMenu();
+                break;
+            case R.id.button_pref:
+                Intent intent = new Intent(this, PreferencesActivity.class);
+                this.startActivity(intent);
                 break;
             case R.id.fragment_vertretungsplan_title:
             case R.id.fragment_vertretungsplan_title_layout:

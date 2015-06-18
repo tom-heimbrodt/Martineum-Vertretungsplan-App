@@ -10,11 +10,37 @@
         android:padding="30dp"
         android:visibility="visible">
 
+        <LinearLayout
+            android:id="@+id/menu_01_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/button_back"
+                style="?android:attr/segmentedButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Zurück"
+                android:layout_weight="1"
+                android:onClick="layoutClicked"/>
+
+            <Button
+                android:id="@+id/button_pref"
+                style="?android:attr/segmentedButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Einst."
+                android:layout_weight="1"
+                android:onClick="layoutClicked"/>
+
+        </LinearLayout>
+
         <Button
             android:id="@+id/button01"
             style="?android:attr/segmentedButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/menu_01_layout"
             android:onClick="layoutClicked"
             android:text="Montag" />
 
