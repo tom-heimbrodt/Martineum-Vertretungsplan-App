@@ -161,6 +161,10 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
                 viewPager.setCurrentItem(4, true);
                 hideDropDownMenu();
                 break;
+            case R.id.fragment_vertretungsplan_title:
+            case R.id.fragment_vertretungsplan_title_layout:
+                // do nothing
+                break;
         }
     }
 
@@ -203,7 +207,7 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
                                     displayHeight / 2f;
                     if (dif > GESTURE_DROP_DOWN_MENU_MIN_Y_DIFFERENZ && dragYStart <= tabManager.getItem(viewPager.getCurrentItem()).getTitleHeight())
                         showDropDownMenu();
-                    else
+                    else if (!isMenuDownFlag)
                         hideDropDownMenu();
                     break;
             }

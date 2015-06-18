@@ -11,7 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/fragment_vertretungsplan_title_layout"
-        android:background="@color/color3">
+        android:background="@color/color3"
+        android:clickable="true"
+        android:onClick="layoutClicked">
 
         <TextView
             android:layout_width="wrap_content"
@@ -32,7 +34,10 @@
             android:text="..."
 
             android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"/>
+            android:layout_marginRight="30dp"
+
+            android:clickable="true"
+            android:onClick="layoutClicked"/>
 
         </RelativeLayout>
 

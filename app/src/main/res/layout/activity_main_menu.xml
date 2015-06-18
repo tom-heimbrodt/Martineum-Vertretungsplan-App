@@ -1,0 +1,106 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:scrollbarSize="0dp">
+
+    <RelativeLayout
+        android:id="@+id/activity_main_drop_down_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="30dp"
+        android:visibility="visible">
+
+        <Button
+            android:id="@+id/button01"
+            style="?android:attr/segmentedButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="layoutClicked"
+            android:text="Montag" />
+
+        <Button
+            android:id="@+id/button02"
+            style="?android:attr/segmentedButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button01"
+            android:onClick="layoutClicked"
+            android:text="Dienstag" />
+
+        <Button
+            android:id="@+id/button03"
+            style="?android:attr/segmentedButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button02"
+            android:onClick="layoutClicked"
+            android:text="Mittwoch" />
+
+        <Button
+            android:id="@+id/button04"
+            style="?android:attr/segmentedButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button03"
+            android:onClick="layoutClicked"
+            android:text="Donnerstag" />
+
+        <Button
+            android:id="@+id/button05"
+            style="?android:attr/segmentedButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button04"
+            android:onClick="layoutClicked"
+            android:text="Freitag" />
+
+
+        <!-- TEST FÜR MEHR BUTTONS -->
+        <!--<Button
+            android:id="@+id/button06"
+            style="?android:attr/segmentedButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button05"
+            android:onClick="layoutClicked"
+            android:text="Mittwoch" />
+
+        <Button
+            android:id="@+id/button07"
+            style="?android:attr/segmentedButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button06"
+            android:onClick="layoutClicked"
+            android:text="Mittwoch" />
+
+        <Button
+            android:id="@+id/button08"
+            style="?android:attr/segmentedButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button07"
+            android:onClick="layoutClicked"
+            android:text="Mittwoch" />
+
+        <Button
+            android:id="@+id/button09"
+            style="?android:attr/segmentedButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button08"
+            android:onClick="layoutClicked"
+            android:text="Mittwoch" />
+
+        <Button
+            android:id="@+id/button10"
+            style="?android:attr/segmentedButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/button09"
+            android:onClick="layoutClicked"
+            android:text="Mittwoch" />-->
+
+    </RelativeLayout>
+
+</ScrollView>
