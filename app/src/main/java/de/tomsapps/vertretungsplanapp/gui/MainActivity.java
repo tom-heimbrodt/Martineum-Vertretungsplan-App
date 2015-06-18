@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import de.tomsapps.vertretungsplanapp.R;
 import de.tomsapps.vertretungsplanapp.algorithms.OtherAlgorithms;
@@ -186,6 +187,11 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
                 // Menu ausblenden
                 hideDropDownMenu();
                 break;
+            case R.id.button_refresh:
+                application.taskManager.addTask(new Task(this, "DOWNLOAD", "Montag"));
+                showToast("Daten werden aktualisiert . . .");
+                hideDropDownMenu();
+                break;
             case R.id.fragment_vertretungsplan_title:
             case R.id.fragment_vertretungsplan_title_layout:
                 // do nothing
@@ -241,6 +247,11 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
         // -> damit auch noch unter dem GestureOverlay liegende Objekte Touch Ereignisse empfangen können
 
         return true;
+    }
+
+    public void showToast(String message)
+    {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     public void showErrorDialog(String title, String message)
