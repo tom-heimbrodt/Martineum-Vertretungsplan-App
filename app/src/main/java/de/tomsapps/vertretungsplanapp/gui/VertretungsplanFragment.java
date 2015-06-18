@@ -73,7 +73,6 @@ public class VertretungsplanFragment extends Fragment
     {
         if (application.getVertretungsplan(position) != null && listView != null)
         {
-            // Liste mit Hilfe des Adapters aktualisieren
             listView.setAdapter(listViewAdapter = new VertretungsplanListAdapter(position, this.getActivity(), application));
             // Datum in den Titel schreiben
             ueberschrift.setText(application.getVertretungsplan(position).getDate());

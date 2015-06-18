@@ -74,8 +74,22 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
 
         // VertretungsplÃ¤ne asynchron aktualisieren
         AsyncTaskManager taskManager = application.getApplicationTaskManager();
-        taskManager.addTask(new Task(this, "DOWNLOAD", "Montag"));
 
+        if (application.getVertretungsplan(4) == null)
+            taskManager.addTask(new Task(this, "DOWNLOAD", "Montag"));
+
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        try {
+            for (int i = 0; i < tabManager.getCount(); i++)
+                tabManager.updateFragment(i);
+        }
+        catch (Exception e) {}
     }
 
    @Override
@@ -169,10 +183,8 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
                 // Einstellungsactivity starten
                 Intent intent = new Intent(this, PreferencesActivity.class);
                 this.startActivity(intent);
-                // Anzeige aktualisieren
-                for (int i = 0; i < tabManager.getCount(); i++)
-                    tabManager.updateFragment(i);
-
+                // Menu ausblenden
+                hideDropDownMenu();
                 break;
             case R.id.fragment_vertretungsplan_title:
             case R.id.fragment_vertretungsplan_title_layout:
@@ -317,6 +329,11 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
             int index = OtherAlgorithms.getIndexFromDay(args[1]);
             if (index <= 3)
                 application.getApplicationTaskManager().addTask(new Task(this, "SAVE_LOCAL", OtherAlgorithms.getDayOfWeek(index + 1)));
+        }
+        else if (args[0].contentEquals("LOAD_SETTINGS"))
+        {
+            try { for (int i = 0; i < tabManager.getCount(); i++) tabManager.updateFragment(i); }
+            catch (Exception e) {}
         }
     }
 }

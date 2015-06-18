@@ -13,16 +13,45 @@
             android:id="@+id/activity_preferences_grouping_headline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Einträge gruppieren nach:"
+            android:text="Einträge gruppieren nach"
             android:textSize="24sp"
-            android:layout_marginTop="20dp"/>
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:background="@color/color3"
+            android:textColor="@color/color1"
+            android:paddingLeft="30dp"/>
 
         <Spinner
             android:id="@+id/activity_preferences_grouping_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/activity_preferences_grouping_headline"
-            android:layout_marginLeft="30dp"/>
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"/>
+
+        <TextView
+            android:id="@+id/activity_preferences_ueber_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/activity_preferences_grouping_spinner"
+            android:text="Über  Martineum Vertretungsplan App"
+            android:textSize="24sp"
+            android:layout_marginTop="20dp"
+            android:background="@color/color3"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:textColor="@color/color1"
+            android:paddingLeft="30dp"/>
+
+        <Button
+            android:id="@+id/activity_preferences_ueber_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/activity_preferences_ueber_text"
+            android:onClick="layoutClicked"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"
+            android:text="Zeige App-Info"/>
 
     </RelativeLayout>
 

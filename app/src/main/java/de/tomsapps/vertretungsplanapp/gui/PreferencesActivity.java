@@ -1,6 +1,7 @@
 package de.tomsapps.vertretungsplanapp.gui;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -10,8 +11,10 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
 import de.tomsapps.vertretungsplanapp.R;
+import de.tomsapps.vertretungsplanapp.algorithms.OtherAlgorithms;
 import de.tomsapps.vertretungsplanapp.core.Preferences;
 import de.tomsapps.vertretungsplanapp.core.VertretungsplanApp;
+import de.tomsapps.vertretungsplanapp.taskmanagement.Task;
 
 public class PreferencesActivity extends FragmentActivity implements AdapterView.OnItemSelectedListener
 {
@@ -35,7 +38,7 @@ public class PreferencesActivity extends FragmentActivity implements AdapterView
         groupingSpinner = (Spinner)findViewById(R.id.activity_preferences_grouping_spinner);
         groupingSpinner.setAdapter(ArrayAdapter.createFromResource(this, R.array.activity_preferences_grouping_spinner, android.R.layout.simple_spinner_item));
         groupingSpinner.setOnItemSelectedListener(this);
-        groupingSpinner.setSelection(0);
+        groupingSpinner.setSelection(OtherAlgorithms.getIntFromSpalte(preferences.gruppierenNach));
     }
 
     @Override
@@ -44,25 +47,8 @@ public class PreferencesActivity extends FragmentActivity implements AdapterView
         switch (parent.getId())
         {
             case R.id.activity_preferences_grouping_spinner:
-                switch (groupingSpinner.getSelectedItemPosition())
-                {
-                    case 0: // Klasse
-                        preferences.gruppierenNach = Preferences.VertretungsplanSpalte.Klasse;
-                        break;
-                    case 1: // Lehrer
-                        preferences.gruppierenNach = Preferences.VertretungsplanSpalte.Lehrer;
-                        break;
-                    case 2: // Raum
-                        preferences.gruppierenNach = Preferences.VertretungsplanSpalte.Raum;
-                        break;
-                    case 3: // Fach
-                        preferences.gruppierenNach = Preferences.VertretungsplanSpalte.Fach;
-                        break;
-                    case 4: // Stunde
-                        preferences.gruppierenNach = Preferences.VertretungsplanSpalte.Stunde;
-                        break;
-
-                }
+                preferences.gruppierenNach = OtherAlgorithms.getSpalteFromInt(groupingSpinner.getSelectedItemPosition());
+                ((VertretungsplanApp)getApplication()).taskManager.addTask(new Task(null, "SAVE_SETTINGS"));
                 break;
         }
     }
@@ -71,5 +57,16 @@ public class PreferencesActivity extends FragmentActivity implements AdapterView
     public void onNothingSelected(AdapterView<?> parent)
     {
         // this is not expected to happen!!!
+    }
+
+    public void layoutClicked(View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.activity_preferences_ueber_button:
+                Intent intent = new Intent(this, InfoActivity.class);
+                startActivity(intent);
+                break;
+        }
     }
 }

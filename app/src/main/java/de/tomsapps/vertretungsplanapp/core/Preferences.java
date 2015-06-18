@@ -6,7 +6,7 @@ public class Preferences
 
     public enum VertretungsplanSpalte
     {
-        Klasse, Lehrer, Stunde, Fach, Raum, Info
+        Klasse, Lehrer, Stunde, Fach, Raum
     }
 
     public Preferences() {}
