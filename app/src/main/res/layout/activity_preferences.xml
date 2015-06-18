@@ -23,8 +23,9 @@
 
         <Spinner
             android:id="@+id/activity_preferences_grouping_spinner"
+            style="?android:spinnerStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="55dp"
             android:layout_below="@id/activity_preferences_grouping_headline"
             android:layout_marginLeft="60dp"
             android:layout_marginRight="60dp"/>
@@ -46,7 +47,7 @@
         <Button
             android:id="@+id/activity_preferences_ueber_button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="55dp"
             android:layout_below="@id/activity_preferences_ueber_text"
             android:onClick="layoutClicked"
             android:layout_marginLeft="60dp"

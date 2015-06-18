@@ -15,7 +15,7 @@
         android:layout_height="120dp"
         android:text="Martineum Vertretungsplan App"
         android:layout_toRightOf="@id/activity_info_image"
-        android:textSize="30sp"
+        android:textSize="25sp"
         android:layout_alignParentRight="true"
         android:gravity="center"/>
 

@@ -36,7 +36,7 @@ public class PreferencesActivity extends FragmentActivity implements AdapterView
         preferences = ((VertretungsplanApp)this.getApplication()).preferences;
 
         groupingSpinner = (Spinner)findViewById(R.id.activity_preferences_grouping_spinner);
-        groupingSpinner.setAdapter(ArrayAdapter.createFromResource(this, R.array.activity_preferences_grouping_spinner, android.R.layout.simple_spinner_item));
+        groupingSpinner.setAdapter(ArrayAdapter.createFromResource(this, R.array.activity_preferences_grouping_spinner, android.R.layout.simple_dropdown_item_1line));
         groupingSpinner.setOnItemSelectedListener(this);
         groupingSpinner.setSelection(OtherAlgorithms.getIntFromSpalte(preferences.gruppierenNach));
     }
