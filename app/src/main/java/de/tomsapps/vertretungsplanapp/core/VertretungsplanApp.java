@@ -14,6 +14,9 @@ public class VertretungsplanApp extends Application
     // ein Singleton - Verweis auf die aktuelle Instanz.
     public static VertretungsplanApp singleton;
 
+    // hier werden alle Einstellungen gespeichert
+    public Preferences preferences = new Preferences();
+
     @Override
     public void onCreate()
     // Haupteinstiegspunkt der Anwedung.

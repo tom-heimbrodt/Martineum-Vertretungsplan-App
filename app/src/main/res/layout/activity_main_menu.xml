@@ -1,4 +1,5 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:scrollbarSize="0dp">
@@ -22,16 +23,18 @@
                 android:layout_height="wrap_content"
                 android:text="Zurück"
                 android:layout_weight="1"
-                android:onClick="layoutClicked"/>
+                android:onClick="layoutClicked"
+                android:textColor="@color/color3"/>
 
             <Button
                 android:id="@+id/button_pref"
                 style="?android:attr/segmentedButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Einst."
+                android:text="Einstellungen"
                 android:layout_weight="1"
-                android:onClick="layoutClicked"/>
+                android:onClick="layoutClicked"
+                android:textColor="@color/color3"/>
 
         </LinearLayout>
 
@@ -42,7 +45,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/menu_01_layout"
             android:onClick="layoutClicked"
-            android:text="Montag" />
+            android:text="Montag"
+            android:textColor="@color/color3"/>
 
         <Button
             android:id="@+id/button02"
@@ -51,7 +55,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/button01"
             android:onClick="layoutClicked"
-            android:text="Dienstag" />
+            android:text="Dienstag"
+            android:textColor="@color/color3"/>
 
         <Button
             android:id="@+id/button03"
@@ -60,7 +65,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/button02"
             android:onClick="layoutClicked"
-            android:text="Mittwoch" />
+            android:text="Mittwoch"
+            android:textColor="@color/color3"/>
 
         <Button
             android:id="@+id/button04"
@@ -69,7 +75,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/button03"
             android:onClick="layoutClicked"
-            android:text="Donnerstag" />
+            android:text="Donnerstag"
+            android:textColor="@color/color3"/>
 
         <Button
             android:id="@+id/button05"
@@ -78,7 +85,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/button04"
             android:onClick="layoutClicked"
-            android:text="Freitag" />
+            android:text="Freitag"
+            android:textColor="@color/color3"/>
 
 
         <!-- TEST FÜR MEHR BUTTONS -->

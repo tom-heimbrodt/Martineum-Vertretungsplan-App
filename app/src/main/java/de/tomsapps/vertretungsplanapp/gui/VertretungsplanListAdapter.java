@@ -8,7 +8,10 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
+import de.tomsapps.vertretungsplanapp.core.Preferences;
 import de.tomsapps.vertretungsplanapp.core.Vertretungsplan;
 import de.tomsapps.vertretungsplanapp.core.VertretungsplanApp;
 import de.tomsapps.vertretungsplanapp.R;
@@ -35,44 +38,62 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
         initialize(app);
     }
 
-    public void initialize(VertretungsplanApp application)
+    public void initialize(final VertretungsplanApp application)
     // Gruppen (re-)initialisieren.
     {
         // Referenz auf den Vertretungsplan erstellen.
         Vertretungsplan vp = application.getVertretungsplan(vertretungsplanID);
         // In jeder Zeile nach Gruppen suchen, welche nicht schon vorhanden sind.
-        for (int i = 0; i < vp.getUnitsSize(); i++)
-        {
+        for (int i = 0; i < vp.getUnitsSize(); i++) {
             VertretungsplanUnit unit = vp.getUnit(i);
-            String klasse = unit.getKlasse();
+
+            String zelle = "";
+
+            switch (application.preferences.gruppierenNach) {
+                case Klasse:
+                    zelle = unit.getKlasse();
+                    break;
+                case Lehrer:
+                    zelle = unit.getLehrer().replace("(", "");
+                    zelle = zelle.replace(")", "");
+                    break;
+                case Fach:
+                    zelle = unit.getFach();
+                    break;
+                case Raum:
+                    zelle = unit.getRaum();
+                    break;
+                case Stunde:
+                    zelle = unit.getStunde();
+                    break;
+            }
+
+            if (zelle.isEmpty()) zelle = "keine Angabe";
+
             ArrayList<String> unitGroupNames = new ArrayList<String>();
             // generate UnitGroupNames (durch ',' getrennte Klassen und weglassen der Kurse nach '/'
             int index = -1, pIndex = 0;
-            int endIndex = klasse.indexOf("/");
-            if (endIndex == -1) endIndex = klasse.length();
-            do
-            {
-                pIndex = index + 1; index = klasse.indexOf(",", pIndex + 1);
+            int endIndex = (application.preferences.gruppierenNach == Preferences.VertretungsplanSpalte.Klasse) ? zelle.indexOf("/") : zelle.length();
+            if (endIndex == -1) endIndex = zelle.length();
+            do {
+                pIndex = index + 1;
+                index = zelle.indexOf(",", pIndex + 1);
 
-                unitGroupNames.add(klasse.substring(pIndex, (index != -1)? index : endIndex));
+                unitGroupNames.add(zelle.substring(pIndex, (index != -1) ? index : endIndex));
             }
             while (index != -1);
 
-            for (String unitName : unitGroupNames)
-            {
+            for (String unitName : unitGroupNames) {
                 boolean groupAlreadyExists = false;
-                for (ListGroup group : groups)
-                {
+                for (ListGroup group : groups) {
                     // Wenn die Gruppe der Unit schon vorhanden ist, die Unit hinzufügen, . . .
-                    if (unitName.contentEquals(group.name))
-                    {
+                    if (unitName.contentEquals(group.name)) {
                         group.addUnit(unit);
                         groupAlreadyExists = true;
                         break;
                     }
                 }
-                if (!groupAlreadyExists)
-                {
+                if (!groupAlreadyExists) {
                     // . . . wenn nicht neue Gruppe erstellen und Unit hinzufügen.
                     ListGroup group = new ListGroup(unitName);
                     group.addUnit(unit);
@@ -83,6 +104,56 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
 
         // Anzahl der Gruppen wird gespeichert, damit nicht immer die Funktion aufgerufen werden muss (-> Geschwindigkeit)
         groupSize = groups.size();
+
+        // Gruppen sortieren
+        Collections.sort(groups, new Comparator<ListGroup>() {
+            @Override
+            public int compare(ListGroup lhs, ListGroup rhs) {
+                boolean differenceFound = false;
+
+                // Klasse ist etwas aufwändiger, weil zuerst 5. und dann 10. Klasse kommen muss!!!!
+                if (application.preferences.gruppierenNach == Preferences.VertretungsplanSpalte.Klasse) {
+                    int number1 = -1, number1IndexEndValue = -1;
+                    for (int i = 0; i < lhs.name.length(); i++) {
+                        if (lhs.name.charAt(i) >= '0' && lhs.name.charAt(i) <= '9')
+                            number1IndexEndValue = i;
+                    }
+                    if (number1IndexEndValue != -1)
+                        number1 = Integer.parseInt(lhs.name.substring(0, number1IndexEndValue + 1));
+
+                    int number2 = -1, number2IndexEndValue = -1;
+                    for (int i = 0; i < rhs.name.length(); i++) {
+                        if (rhs.name.charAt(i) >= '0' && rhs.name.charAt(i) <= '9')
+                            number2IndexEndValue = i;
+                    }
+                    if (number2IndexEndValue != -1)
+                        number2 = Integer.parseInt(rhs.name.substring(0, number2IndexEndValue + 1));
+
+                    if (number1 < number2) return -1;
+                    else if (number2 < number1) return 1;
+                }
+
+
+                // Ansonsten alphabetisch ...
+                for (int index = 0; !differenceFound && index < lhs.name.length() && index < rhs.name.length(); index++) {
+                    if (lhs.name.charAt(index) == rhs.name.charAt(index))
+                        continue;
+                    else if (lhs.name.charAt(index) < rhs.name.charAt(index))
+                        return -1;
+                    else
+                        return 1;
+                }
+
+
+                // ... oder kürzestes zuerst
+                if (lhs.name.length() < rhs.name.length())
+                    return -1;
+                else if (lhs.name.length() > rhs.name.length())
+                    return 1;
+                else
+                    return 0;
+            }
+        });
     }
 
     // region überschriebene Methoden der Basis-Klasse

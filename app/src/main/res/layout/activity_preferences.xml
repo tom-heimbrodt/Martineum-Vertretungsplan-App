@@ -9,7 +9,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/activity_preferences_grouping_headline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Einträge gruppieren nach:"
+            android:textSize="24sp"
+            android:layout_marginTop="20dp"/>
 
+        <Spinner
+            android:id="@+id/activity_preferences_grouping_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/activity_preferences_grouping_headline"
+            android:layout_marginLeft="30dp"/>
 
     </RelativeLayout>
 

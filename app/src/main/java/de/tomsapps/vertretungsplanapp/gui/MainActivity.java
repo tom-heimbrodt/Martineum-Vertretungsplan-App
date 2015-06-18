@@ -166,8 +166,13 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
                 hideDropDownMenu();
                 break;
             case R.id.button_pref:
+                // Einstellungsactivity starten
                 Intent intent = new Intent(this, PreferencesActivity.class);
                 this.startActivity(intent);
+                // Anzeige aktualisieren
+                for (int i = 0; i < tabManager.getCount(); i++)
+                    tabManager.updateFragment(i);
+
                 break;
             case R.id.fragment_vertretungsplan_title:
             case R.id.fragment_vertretungsplan_title_layout:
