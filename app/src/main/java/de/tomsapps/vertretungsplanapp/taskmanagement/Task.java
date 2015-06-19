@@ -75,6 +75,7 @@ public class Task
                 Preferences prefs = app.preferences;
 
                 rawSettings += String.valueOf(OtherAlgorithms.getIntFromSpalte(prefs.gruppierenNach));
+                rawSettings += "$";
                 rawSettings += String.valueOf(OtherAlgorithms.getIntFromStatusLeisteAusblenden(prefs.statusLeisteAuslenden));
 
                 EnvironmentInterfaces.LokalStorage.saveData("SETTINGS", rawSettings, app);
