@@ -9,5 +9,12 @@ public class Preferences
         Klasse, Lehrer, Stunde, Fach, Raum
     }
 
+    public StatusLeisteAuslenden statusLeisteAuslenden = StatusLeisteAuslenden.NurVertretungsplan;
+
+    public enum StatusLeisteAuslenden
+    {
+        Immer, Nie, NurVertretungsplan
+    }
+
     public Preferences() {}
 }

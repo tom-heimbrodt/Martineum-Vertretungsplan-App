@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import de.tomsapps.vertretungsplanapp.R;
 import de.tomsapps.vertretungsplanapp.algorithms.OtherAlgorithms;
+import de.tomsapps.vertretungsplanapp.core.Preferences;
 import de.tomsapps.vertretungsplanapp.core.VertretungsplanApp;
 import de.tomsapps.vertretungsplanapp.taskmanagement.AsyncTaskManager;
 import de.tomsapps.vertretungsplanapp.taskmanagement.ITaskOwner;
@@ -51,7 +52,8 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
         mainWindow  = this.getWindow();
 
         // Anwendung im Vollbild ausführen
-        mainWindow.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if (application.preferences.statusLeisteAuslenden != Preferences.StatusLeisteAuslenden.Nie)
+            mainWindow.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // ActionBar ausblenden, sofern vorhanden (API >= 11)
         if (Build.VERSION.SDK_INT > 11)
@@ -85,6 +87,14 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
     protected void onResume()
     {
         super.onResume();
+
+        hideDropDownMenu();
+
+        if (((VertretungsplanApp)getApplication()).preferences.statusLeisteAuslenden != Preferences.StatusLeisteAuslenden.Nie)
+            this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        else
+            this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
 
         try {
             for (int i = 0; i < tabManager.getCount(); i++)
@@ -184,8 +194,6 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
                 // Einstellungsactivity starten
                 Intent intent = new Intent(this, PreferencesActivity.class);
                 this.startActivity(intent);
-                // Menu ausblenden
-                hideDropDownMenu();
                 break;
             case R.id.button_refresh:
                 application.taskManager.addTask(new Task(this, "DOWNLOAD", "Montag"));

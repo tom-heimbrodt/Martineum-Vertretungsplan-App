@@ -4,111 +4,148 @@
     android:layout_height="wrap_content"
     android:scrollbarSize="0dp">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/menu_icon_bar_shadow">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <!--<ImageView
+            android:id="@+id/menu_icon_bar_shadow_solid"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@color/color1"
+            android:layout_marginTop="10dp"/>-->
+
+        <ImageView
+            android:id="@+id/menu_icon_bar_shadow_1"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/shadowa"
+            android:scaleType="fitCenter"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="275dp"
+                android:src="@drawable/shadowb"
+                android:scaleType="fitXY"
+                android:layout_below="@id/menu_icon_bar_shadow_1"
+                android:layout_marginTop="0dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                />
+
+        </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/activity_main_drop_down_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="0dp"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
         android:paddingBottom="30dp"
         android:visibility="visible">
 
-        <ImageButton
-            android:id="@+id/button_refresh"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/refresh"
-            android:onClick="layoutClicked"
-            android:textColor="@color/color3"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="25dp"/>
+                <ImageButton
+                    android:id="@+id/button_refresh"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/refresh"
+                    android:onClick="layoutClicked"
+                    android:textColor="@color/color3"
+                    android:layout_marginLeft="60dp"
+                    android:layout_marginTop="15dp"/>
 
-        <ImageButton
-                android:id="@+id/button_back"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-            android:layout_marginTop="20dp"
-                android:background="@drawable/up"
-                android:onClick="layoutClicked"
-                android:textColor="@color/color3"
-            android:layout_centerHorizontal="true"/>
 
-        <ImageButton
-                android:id="@+id/button_pref"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/settings"
-                android:onClick="layoutClicked"
-                android:textColor="@color/color3"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="25dp"/>
+                <ImageButton
+                    android:id="@+id/button_back"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/up"
+                    android:onClick="layoutClicked"
+                    android:textColor="@color/color3"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    />
 
-        <ImageView
-            android:id="@+id/menu_space_1"
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:layout_below="@id/button_back"
-            android:layout_marginTop="5dp"
-            android:background="@color/color3"/>
+                <ImageButton
+                    android:id="@+id/button_pref"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/settings"
+                    android:onClick="layoutClicked"
+                    android:textColor="@color/color3"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="60dp"
+                    android:layout_marginTop="15dp"/>
 
         <Button
             android:id="@+id/button01"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/menu_space_1"
-            android:layout_marginTop="5dp"
+            android:layout_height="50dp"
+            android:layout_below="@id/button_back"
+            android:layout_marginTop="30dp"
             android:onClick="layoutClicked"
             android:text="Montag"
-            android:background="@color/color1"
-            android:textColor="@color/color3"/>
+            android:background="@color/transparent"
+            android:textColor="@color/color3"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"/>
 
         <Button
             android:id="@+id/button02"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_below="@id/button01"
             android:onClick="layoutClicked"
             android:text="Dienstag"
-            android:background="@color/color1"
-            android:textColor="@color/color3"/>
+            android:background="@color/transparent"
+            android:textColor="@color/color3"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"/>
 
         <Button
             android:id="@+id/button03"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_below="@id/button02"
             android:onClick="layoutClicked"
             android:text="Mittwoch"
-            android:background="@color/color1"
-            android:textColor="@color/color3"/>
+            android:background="@color/transparent"
+            android:textColor="@color/color3"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"/>
 
         <Button
             android:id="@+id/button04"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_below="@id/button03"
             android:onClick="layoutClicked"
             android:text="Donnerstag"
-            android:background="@color/color1"
-            android:textColor="@color/color3"/>
+            android:background="@color/transparent"
+            android:textColor="@color/color3"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"/>
 
         <Button
             android:id="@+id/button05"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_below="@id/button04"
             android:onClick="layoutClicked"
             android:text="Freitag"
-            android:background="@color/color1"
-            android:textColor="@color/color3"/>
-
+            android:background="@color/transparent"
+            android:textColor="@color/color3"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"/>
 
         <!-- TEST FÜR MEHR BUTTONS -->
         <!--<Button
@@ -157,5 +194,7 @@
             android:text="Mittwoch" />-->
 
     </RelativeLayout>
+
+    </FrameLayout>
 
 </ScrollView>

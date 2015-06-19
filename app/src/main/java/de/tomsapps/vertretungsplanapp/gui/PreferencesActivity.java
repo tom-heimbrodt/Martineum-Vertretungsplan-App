@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -20,7 +21,7 @@ public class PreferencesActivity extends FragmentActivity implements AdapterView
 {
     private Preferences preferences; // hier werden die Einstellungen gespeichert
 
-    private Spinner groupingSpinner;
+    private Spinner groupingSpinner, fullscreenSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -35,10 +36,19 @@ public class PreferencesActivity extends FragmentActivity implements AdapterView
 
         preferences = ((VertretungsplanApp)this.getApplication()).preferences;
 
+        if (((VertretungsplanApp)getApplication()).preferences.statusLeisteAuslenden == Preferences.StatusLeisteAuslenden.Immer)
+            this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         groupingSpinner = (Spinner)findViewById(R.id.activity_preferences_grouping_spinner);
         groupingSpinner.setAdapter(ArrayAdapter.createFromResource(this, R.array.activity_preferences_grouping_spinner, android.R.layout.simple_dropdown_item_1line));
         groupingSpinner.setOnItemSelectedListener(this);
         groupingSpinner.setSelection(OtherAlgorithms.getIntFromSpalte(preferences.gruppierenNach));
+
+        fullscreenSpinner = (Spinner)findViewById(R.id.activity_preferences_fullscreen_spinner);
+        fullscreenSpinner.setAdapter(ArrayAdapter.createFromResource(this, R.array.activity_preferences_fullscreen_spinner, android.R.layout.simple_dropdown_item_1line));
+        fullscreenSpinner.setOnItemSelectedListener(this);
+        fullscreenSpinner.setSelection(OtherAlgorithms.getIntFromStatusLeisteAusblenden(preferences.statusLeisteAuslenden));
+
     }
 
     @Override
@@ -50,7 +60,16 @@ public class PreferencesActivity extends FragmentActivity implements AdapterView
                 preferences.gruppierenNach = OtherAlgorithms.getSpalteFromInt(groupingSpinner.getSelectedItemPosition());
                 ((VertretungsplanApp)getApplication()).taskManager.addTask(new Task(null, "SAVE_SETTINGS"));
                 break;
+            case R.id.activity_preferences_fullscreen_spinner:
+                preferences.statusLeisteAuslenden = OtherAlgorithms.getStatusLeisteAusblendenFromInt(fullscreenSpinner.getSelectedItemPosition());
+                ((VertretungsplanApp)getApplication()).taskManager.addTask(new Task(null, "SAVE_SETTINGS"));
+                break;
         }
+
+        if (((VertretungsplanApp)getApplication()).preferences.statusLeisteAuslenden == Preferences.StatusLeisteAuslenden.Immer)
+            this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        else
+            this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     @Override

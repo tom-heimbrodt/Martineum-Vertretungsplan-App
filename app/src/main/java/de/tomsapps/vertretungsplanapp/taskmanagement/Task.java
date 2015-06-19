@@ -63,6 +63,9 @@ public class Task
                 // [0] = gruppieren nach . . .
                 prefs.gruppierenNach = OtherAlgorithms.getSpalteFromInt(Integer.parseInt(settings[0]));
 
+                // [1] = Statusleiste ausblenden
+                prefs.statusLeisteAuslenden = OtherAlgorithms.getStatusLeisteAusblendenFromInt(Integer.parseInt(settings[1]));
+
                 app.preferences = prefs;
             }
             else if (args[0].contentEquals("SAVE_SETTINGS"))
@@ -72,6 +75,7 @@ public class Task
                 Preferences prefs = app.preferences;
 
                 rawSettings += String.valueOf(OtherAlgorithms.getIntFromSpalte(prefs.gruppierenNach));
+                rawSettings += String.valueOf(OtherAlgorithms.getIntFromStatusLeisteAusblenden(prefs.statusLeisteAuslenden));
 
                 EnvironmentInterfaces.LokalStorage.saveData("SETTINGS", rawSettings, app);
             }

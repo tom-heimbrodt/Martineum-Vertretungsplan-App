@@ -63,4 +63,25 @@ public final class OtherAlgorithms
             default: throw new RuntimeException("Das diese Exception gewurfen wird ist logisch absolut unmöglich!");
         }
     }
+
+    public static Preferences.StatusLeisteAuslenden getStatusLeisteAusblendenFromInt(int id)
+    {
+        switch (id)
+        {
+            case 0: return Preferences.StatusLeisteAuslenden.Immer;
+            case 1: return Preferences.StatusLeisteAuslenden.NurVertretungsplan;
+            case 2: return Preferences.StatusLeisteAuslenden.Nie;
+            default: throw new IllegalArgumentException();
+        }
+    }
+
+    public static int getIntFromStatusLeisteAusblenden(Preferences.StatusLeisteAuslenden sla)
+    {
+        switch (sla)
+        {
+            case Immer: return 0;
+            case NurVertretungsplan: return 1;
+            default: return 2;
+        }
+    }
 }
