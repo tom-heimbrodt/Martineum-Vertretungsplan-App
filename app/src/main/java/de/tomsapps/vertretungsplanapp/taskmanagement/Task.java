@@ -56,7 +56,7 @@ public class Task
             else if (args[0].contentEquals("LOAD_SETTINGS"))
             {
                 String settingsRaw = EnvironmentInterfaces.LokalStorage.loadData("SETTINGS", app);
-                String[] settings = settingsRaw.split("$");
+                String[] settings = settingsRaw.split("§%§");
 
                 Preferences prefs = new Preferences();
 
@@ -75,7 +75,7 @@ public class Task
                 Preferences prefs = app.preferences;
 
                 rawSettings += String.valueOf(OtherAlgorithms.getIntFromSpalte(prefs.gruppierenNach));
-                rawSettings += "$";
+                rawSettings += "§%§";
                 rawSettings += String.valueOf(OtherAlgorithms.getIntFromStatusLeisteAusblenden(prefs.statusLeisteAuslenden));
 
                 EnvironmentInterfaces.LokalStorage.saveData("SETTINGS", rawSettings, app);
