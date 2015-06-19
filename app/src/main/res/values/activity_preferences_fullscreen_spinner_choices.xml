@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="activity_preferences_fullscreen_spinner">
+        <item>Immer</item>
+        <item>Nur bei Vertretungsplan</item>
+        <item>Nie</item>
+    </string-array>
+</resources>

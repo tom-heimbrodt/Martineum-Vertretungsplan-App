@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/activity_preferences_grouping_headline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Einträge gruppieren nach"
+            android:textSize="24sp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:background="@color/color3"
+            android:textColor="@color/color1"
+            android:paddingLeft="30dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@id/activity_preferences_grouping_headline"
+            android:background="@drawable/shadowc"/>
+
+        <Spinner
+            android:id="@+id/activity_preferences_grouping_spinner"
+            style="?android:spinnerStyle"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_below="@id/activity_preferences_grouping_headline"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@id/activity_preferences_grouping_spinner"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/shadowd"/>
+
+        <TextView
+            android:id="@+id/activity_preferences_fullscreen_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/activity_preferences_grouping_spinner"
+            android:text="Statusleiste ausblenden"
+            android:textSize="24sp"
+            android:layout_marginTop="20dp"
+            android:background="@color/color3"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:textColor="@color/color1"
+            android:paddingLeft="30dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@id/activity_preferences_fullscreen_text"
+            android:background="@drawable/shadowc"/>
+
+        <Spinner
+            android:id="@+id/activity_preferences_fullscreen_spinner"
+            style="?android:spinnerStyle"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_below="@id/activity_preferences_fullscreen_text"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"/>
+
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@id/activity_preferences_fullscreen_spinner"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/shadowd"/>
+
+        <TextView
+            android:id="@+id/activity_preferences_ueber_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/activity_preferences_fullscreen_spinner"
+            android:text="Über Martineum Vertretungsplan App"
+            android:textSize="24sp"
+            android:layout_marginTop="20dp"
+            android:background="@color/color3"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:textColor="@color/color1"
+            android:paddingLeft="30dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@id/activity_preferences_ueber_text"
+            android:background="@drawable/shadowc"/>
+
+        <Button
+            android:id="@+id/activity_preferences_ueber_button"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_below="@id/activity_preferences_ueber_text"
+            android:onClick="layoutClicked"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"
+            android:layout_marginTop="10dp"
+            android:text="Zeige App-Info"/>
+
+    </RelativeLayout>
+
+</ScrollView>

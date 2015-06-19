@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/color3">
+    android:background="@color/color1">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/fragment_vertretungsplan_title_layout"
-        android:background="@color/color3">
+        android:background="@color/color3"
+        android:clickable="true"
+        android:onClick="layoutClicked">
 
         <TextView
             android:layout_width="wrap_content"
@@ -32,24 +34,45 @@
             android:text="..."
 
             android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"/>
+            android:layout_marginRight="30dp"
 
-        </RelativeLayout>
+            android:clickable="true"
+            android:onClick="layoutClicked"/>
+
+    </RelativeLayout>
+
 
     <ExpandableListView
         android:id="@+id/exp_list_view"
+        android:layout_below="@id/fragment_vertretungsplan_title_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
         android:animateLayoutChanges="false"
         android:animationCache="false"
-        android:fadeScrollbars="true"/>
+        android:fadeScrollbars="true"
+
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+
+        android:scrollbarStyle="outsideOverlay"
+        android:smoothScrollbar="true"
+        android:scrollbars="vertical"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_below="@id/fragment_vertretungsplan_title_layout"
+        android:background="@drawable/shadowc"/>
+
+
 
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:id="@+id/progress_bar"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_centerHorizontal="true"/>
 
-</LinearLayout>
+</RelativeLayout>

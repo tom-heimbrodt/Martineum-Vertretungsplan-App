@@ -3,6 +3,7 @@ package de.tomsapps.vertretungsplanapp.core;
 import android.app.Application;
 
 import de.tomsapps.vertretungsplanapp.taskmanagement.AsyncTaskManager;
+import de.tomsapps.vertretungsplanapp.taskmanagement.Task;
 
 public class VertretungsplanApp extends Application
 // Hauptklase, welche die Anwedung an sich repräsentiert.
@@ -11,18 +12,19 @@ public class VertretungsplanApp extends Application
     public AsyncTaskManager taskManager;
     // erstelle ThreadSynchronizer für Threadsicherheit
     private ThreadSynchronizer synchronizer = new ThreadSynchronizer();
-    // ein Singleton - Verweis auf die aktuelle Instanz.
-    public static VertretungsplanApp singleton;
+
+    // hier werden alle Einstellungen gespeichert
+    public Preferences preferences = new Preferences();
 
     @Override
     public void onCreate()
     // Haupteinstiegspunkt der Anwedung.
     {
         super.onCreate();
-        singleton = this;
 
         // Aufgabenverwaltung initialisieren.
         taskManager = new AsyncTaskManager(this);
+        taskManager.addTask(new Task(null, "LOAD_SETTINGS"));
     }
 
     public Vertretungsplan getVertretungsplan(int index)

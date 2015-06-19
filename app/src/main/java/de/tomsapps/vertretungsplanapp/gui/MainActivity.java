@@ -3,6 +3,7 @@ package de.tomsapps.vertretungsplanapp.gui;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.gesture.GestureOverlayView;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,9 +18,11 @@ import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import de.tomsapps.vertretungsplanapp.R;
 import de.tomsapps.vertretungsplanapp.algorithms.OtherAlgorithms;
+import de.tomsapps.vertretungsplanapp.core.Preferences;
 import de.tomsapps.vertretungsplanapp.core.VertretungsplanApp;
 import de.tomsapps.vertretungsplanapp.taskmanagement.AsyncTaskManager;
 import de.tomsapps.vertretungsplanapp.taskmanagement.ITaskOwner;
@@ -49,7 +52,8 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
         mainWindow  = this.getWindow();
 
         // Anwendung im Vollbild ausführen
-        mainWindow.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if (application.preferences.statusLeisteAuslenden != Preferences.StatusLeisteAuslenden.Nie)
+            mainWindow.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // ActionBar ausblenden, sofern vorhanden (API >= 11)
         if (Build.VERSION.SDK_INT > 11)
@@ -73,8 +77,30 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
 
         // VertretungsplÃ¤ne asynchron aktualisieren
         AsyncTaskManager taskManager = application.getApplicationTaskManager();
-        taskManager.addTask(new Task(this, "DOWNLOAD", "Montag"));
 
+        if (application.getVertretungsplan(4) == null)
+            taskManager.addTask(new Task(this, "DOWNLOAD", "Montag"));
+
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        hideDropDownMenu();
+
+        if (((VertretungsplanApp)getApplication()).preferences.statusLeisteAuslenden != Preferences.StatusLeisteAuslenden.Nie)
+            this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        else
+            this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+
+        try {
+            for (int i = 0; i < tabManager.getCount(); i++)
+                tabManager.updateFragment(i);
+        }
+        catch (Exception e) {}
     }
 
    @Override
@@ -161,6 +187,23 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
                 viewPager.setCurrentItem(4, true);
                 hideDropDownMenu();
                 break;
+            case R.id.button_back:
+                hideDropDownMenu();
+                break;
+            case R.id.button_pref:
+                // Einstellungsactivity starten
+                Intent intent = new Intent(this, PreferencesActivity.class);
+                this.startActivity(intent);
+                break;
+            case R.id.button_refresh:
+                application.taskManager.addTask(new Task(this, "DOWNLOAD", "Montag"));
+                showToast("Daten werden aktualisiert . . .");
+                hideDropDownMenu();
+                break;
+            case R.id.fragment_vertretungsplan_title:
+            case R.id.fragment_vertretungsplan_title_layout:
+                // do nothing
+                break;
         }
     }
 
@@ -203,7 +246,7 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
                                     displayHeight / 2f;
                     if (dif > GESTURE_DROP_DOWN_MENU_MIN_Y_DIFFERENZ && dragYStart <= tabManager.getItem(viewPager.getCurrentItem()).getTitleHeight())
                         showDropDownMenu();
-                    else
+                    else if (!isMenuDownFlag)
                         hideDropDownMenu();
                     break;
             }
@@ -212,6 +255,11 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
         // -> damit auch noch unter dem GestureOverlay liegende Objekte Touch Ereignisse empfangen können
 
         return true;
+    }
+
+    public void showToast(String message)
+    {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     public void showErrorDialog(String title, String message)
@@ -300,6 +348,11 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
             int index = OtherAlgorithms.getIndexFromDay(args[1]);
             if (index <= 3)
                 application.getApplicationTaskManager().addTask(new Task(this, "SAVE_LOCAL", OtherAlgorithms.getDayOfWeek(index + 1)));
+        }
+        else if (args[0].contentEquals("LOAD_SETTINGS"))
+        {
+            try { for (int i = 0; i < tabManager.getCount(); i++) tabManager.updateFragment(i); }
+            catch (Exception e) {}
         }
     }
 }

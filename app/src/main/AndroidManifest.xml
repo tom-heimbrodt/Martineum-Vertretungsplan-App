@@ -20,5 +20,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="de.tomsapps.vertretungsplanapp.gui.PreferencesActivity"
+
+            android:parentActivityName="de.tomsapps.vertretungsplanapp.gui.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.tomsapps.vertretungsplanapp.gui.MainActivity" />
+        </activity>
+
+        <activity
+            android:name="de.tomsapps.vertretungsplanapp.gui.InfoActivity"
+
+            android:parentActivityName="de.tomsapps.vertretungsplanapp.gui.PreferencesActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.tomsapps.vertretungsplanapp.gui.PreferencesActivity" />
+        </activity>
     </application>
 </manifest>
