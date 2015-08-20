@@ -47,9 +47,7 @@ public final class HTMLParser
                 if (unit != null) units.add(unit);
             }
             catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            { }
         }
 
         return units;

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/dialog_color_rot_text"
+        android:layout_width="75dp"
+        android:layout_height="40dp"
+        android:text="Rot:"
+        android:layout_marginLeft="10dp"
+        android:gravity="center"/>
+
+    <SeekBar
+        android:id="@+id/dialog_color_rot_seek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/dialog_color_rot_text"
+        android:layout_marginRight="10dp"
+
+        android:max="255"/>
+
+    <TextView
+        android:id="@+id/dialog_color_rot_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Rot Value"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="10dp"
+        android:layout_toRightOf="@id/dialog_color_rot_text"
+        android:layout_below="@id/dialog_color_rot_seek"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/dialog_color_gruen_text"
+        android:layout_width="75dp"
+        android:layout_height="40dp"
+        android:text="Grün:"
+        android:layout_below="@id/dialog_color_rot_value"
+        android:layout_marginLeft="10dp"
+        android:gravity="center"/>
+
+    <SeekBar
+        android:id="@+id/dialog_color_gruen_seek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/dialog_color_gruen_text"
+        android:layout_below="@id/dialog_color_rot_value"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+
+        android:max="255"/>
+
+    <TextView
+        android:id="@+id/dialog_color_gruen_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gruen Value"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="10dp"
+        android:layout_toRightOf="@id/dialog_color_gruen_text"
+        android:layout_below="@id/dialog_color_gruen_seek"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/dialog_color_blau_text"
+        android:layout_width="75dp"
+        android:layout_height="40dp"
+        android:text="Blau:"
+        android:layout_below="@id/dialog_color_gruen_value"
+        android:layout_marginLeft="10dp"
+        android:gravity="center"/>
+
+    <SeekBar
+        android:id="@+id/dialog_color_blau_seek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/dialog_color_blau_text"
+        android:layout_below="@id/dialog_color_gruen_value"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+
+        android:max="255"/>
+
+    <TextView
+        android:id="@+id/dialog_color_blau_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Blau Value"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="10dp"
+        android:layout_toRightOf="@id/dialog_color_blau_text"
+        android:layout_below="@id/dialog_color_blau_seek"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/dialog_color_vorschau_text"
+        android:layout_width="75dp"
+        android:layout_height="40dp"
+        android:text="Vorschau:"
+        android:layout_below="@id/dialog_color_blau_value"
+        android:layout_marginLeft="10dp"
+        android:gravity="center"/>
+
+    <View
+        android:id="@+id/dialog_color_vorschau"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_below="@id/dialog_color_blau_value"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/dialog_color_vorschau_text"
+        android:background="@color/primaryColor"/>
+
+</RelativeLayout>

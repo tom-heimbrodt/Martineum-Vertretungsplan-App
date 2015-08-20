@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 22
     buildToolsVersion '20.0.0'
 
     defaultConfig {
         applicationId "de.tomsapps.vertretungsplanapp"
-        minSdkVersion 4
+        minSdkVersion 7
         targetSdkVersion 22
-        versionCode 1010
-        versionName "DELTA (1.1.0)"
+        versionCode 1020
+        versionName "DELTA 2 (1.2.0)"
     }
     buildTypes {
         release {
@@ -22,4 +22,5 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.android.support:appcompat-v7:22.2.0'
 }

@@ -1,6 +1,7 @@
 package de.tomsapps.vertretungsplanapp.core;
 
 import android.app.Application;
+import android.graphics.Typeface;
 
 import de.tomsapps.vertretungsplanapp.taskmanagement.AsyncTaskManager;
 import de.tomsapps.vertretungsplanapp.taskmanagement.Task;
@@ -14,7 +15,7 @@ public class VertretungsplanApp extends Application
     private ThreadSynchronizer synchronizer = new ThreadSynchronizer();
 
     // hier werden alle Einstellungen gespeichert
-    public Preferences preferences = new Preferences();
+    public Preferences preferences;
 
     @Override
     public void onCreate()
@@ -22,9 +23,13 @@ public class VertretungsplanApp extends Application
     {
         super.onCreate();
 
+        preferences = new Preferences();
+
         // Aufgabenverwaltung initialisieren.
         taskManager = new AsyncTaskManager(this);
         taskManager.addTask(new Task(null, "LOAD_SETTINGS"));
+
+        Resources.init(getAssets());
     }
 
     public Vertretungsplan getVertretungsplan(int index)

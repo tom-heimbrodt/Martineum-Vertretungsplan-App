@@ -1,6 +1,7 @@
 package de.tomsapps.vertretungsplanapp.gui;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import de.tomsapps.vertretungsplanapp.core.Preferences;
+import de.tomsapps.vertretungsplanapp.core.Resources;
 import de.tomsapps.vertretungsplanapp.core.Vertretungsplan;
 import de.tomsapps.vertretungsplanapp.core.VertretungsplanApp;
 import de.tomsapps.vertretungsplanapp.R;
@@ -68,7 +70,10 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
                     break;
             }
 
-            if (zelle.isEmpty()) zelle = "keine Angabe";
+            if (Build.VERSION.SDK_INT >= 9)
+                if (zelle.isEmpty()) zelle = "keine Angabe";
+            else
+                if (zelle.contentEquals("")) zelle = "keine Angabe";
 
             ArrayList<String> unitGroupNames = new ArrayList<String>();
             // generate UnitGroupNames (durch ',' getrennte Klassen und weglassen der Kurse nach '/'
@@ -202,6 +207,17 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
         return true;
     }
 
+    class GroupLayout
+    {
+        TextView classView;
+        TextView aenderungenView;
+        public GroupLayout(TextView classView, TextView aenderungenView)
+        {
+            this.classView = classView;
+            this.aenderungenView = aenderungenView;
+        }
+    }
+
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent)
     {
@@ -211,12 +227,31 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.exp_list_view_group, null, false);
         }
-        TextView textView1 = (TextView) convertView.findViewById(R.id.exp_list_view_group_text1);
-        textView1.setText(groups.get(groupPosition).name);
-        TextView textView2 = (TextView) convertView.findViewById(R.id.exp_list_view_group_text2);
+        GroupLayout groupLayout = (GroupLayout)convertView.getTag();
+        if (groupLayout == null)
+        {
+            TextView textView1 = (TextView) convertView.findViewById(R.id.exp_list_view_group_text1);
+            TextView textView2 = (TextView) convertView.findViewById(R.id.exp_list_view_group_text2);
+            groupLayout = new GroupLayout(textView1, textView2);
+            convertView.setTag(groupLayout);
+        }
+
+        groupLayout.classView.setText(groups.get(groupPosition).name);
+        groupLayout.classView.setTypeface(Resources.roboto_light);
+
         int anzahlAenderungen = groups.get(groupPosition).unitsSize;
-        textView2.setText(anzahlAenderungen + ((anzahlAenderungen == 1) ? " Änderung" : " Änderungen"));
+        groupLayout.aenderungenView.setText(anzahlAenderungen + ((anzahlAenderungen == 1) ? " Änderung" : " Änderungen"));
+        groupLayout.aenderungenView.setTypeface(Resources.roboto_light_italic);
         return convertView;
+    }
+
+    class ItemLayout
+    {
+        TextView[] textViews;
+        public ItemLayout(TextView[] textViews)
+        {
+           this.textViews = textViews;
+        }
     }
 
     @Override
@@ -228,19 +263,44 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.exp_list_view_item, null, false);
         }
+        ItemLayout itemLayout = (ItemLayout)convertView.getTag();
+        if (itemLayout == null)
+        {
+            TextView[] textViews = new TextView[6];
+            textViews[0] = (TextView) convertView.findViewById(R.id.exp_list_view_item_text1);
+            textViews[0].setTypeface(Resources.roboto_light);
+            textViews[1] = (TextView) convertView.findViewById(R.id.exp_list_view_item_text2);
+            textViews[1].setTypeface(Resources.roboto_light);
+            textViews[2] = (TextView) convertView.findViewById(R.id.exp_list_view_item_text3);
+            textViews[2].setTypeface(Resources.roboto_light);
+            textViews[3] = (TextView) convertView.findViewById(R.id.exp_list_view_item_text4);
+            textViews[3].setTypeface(Resources.roboto_light);
+            textViews[4] = (TextView) convertView.findViewById(R.id.exp_list_view_item_text5);
+            textViews[4].setTypeface(Resources.roboto_light);
+            textViews[5] = (TextView) convertView.findViewById(R.id.exp_list_view_item_text6);
+            textViews[5].setTypeface(Resources.roboto_light_italic);
+            itemLayout = new ItemLayout(textViews);
+            convertView.setTag(itemLayout);
+        }
         ListGroup group = groups.get(groupPosition);
-        TextView textView1 = (TextView) convertView.findViewById(R.id.exp_list_view_item_text1);
-        textView1.setText(group.units.get(childPosition).getKlasse());
-        TextView textView2 = (TextView) convertView.findViewById(R.id.exp_list_view_item_text2);
-        textView2.setText(group.units.get(childPosition).getStunde());
-        TextView textView3 = (TextView) convertView.findViewById(R.id.exp_list_view_item_text3);
-        textView3.setText(group.units.get(childPosition).getFach());
-        TextView textView4 = (TextView) convertView.findViewById(R.id.exp_list_view_item_text4);
-        textView4.setText(group.units.get(childPosition).getLehrer());
-        TextView textView5 = (TextView) convertView.findViewById(R.id.exp_list_view_item_text5);
-        textView5.setText(group.units.get(childPosition).getRaum());
-        TextView textView6 = (TextView) convertView.findViewById(R.id.exp_list_view_item_text6);
-        textView6.setText(group.units.get(childPosition).getInfo());
+
+        itemLayout.textViews[0].setText(group.units.get(childPosition).getKlasse());
+        itemLayout.textViews[1].setText(group.units.get(childPosition).getStunde());
+        itemLayout.textViews[2].setText(group.units.get(childPosition).getFach());
+        itemLayout.textViews[3].setText(group.units.get(childPosition).getLehrer());
+        itemLayout.textViews[4].setText(group.units.get(childPosition).getRaum());
+        itemLayout.textViews[5].setText(group.units.get(childPosition).getInfo());
+
+        if (childPosition == 0)
+            convertView.findViewById(R.id.exp_list_view_item_shadow_top).setVisibility(View.VISIBLE);
+            else
+            convertView.findViewById(R.id.exp_list_view_item_shadow_top).setVisibility(View.GONE);
+
+        if (isLastChild)
+            convertView.findViewById(R.id.exp_list_view_item_shadow_bottom).setVisibility(View.VISIBLE);
+        else
+            convertView.findViewById(R.id.exp_list_view_item_shadow_bottom).setVisibility(View.GONE);
+
         return convertView;
     }
 

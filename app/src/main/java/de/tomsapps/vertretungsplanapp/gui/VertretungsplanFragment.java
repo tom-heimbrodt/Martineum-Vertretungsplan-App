@@ -1,5 +1,8 @@
 package de.tomsapps.vertretungsplanapp.gui;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +16,8 @@ import android.widget.TextView;
 
 import de.tomsapps.vertretungsplanapp.R;
 import de.tomsapps.vertretungsplanapp.algorithms.OtherAlgorithms;
+import de.tomsapps.vertretungsplanapp.core.Preferences;
+import de.tomsapps.vertretungsplanapp.core.Resources;
 import de.tomsapps.vertretungsplanapp.core.VertretungsplanApp;
 
 public class VertretungsplanFragment extends Fragment
@@ -60,11 +65,19 @@ public class VertretungsplanFragment extends Fragment
         // Erstelle Layout . . .
         View rootView = inflater.inflate(R.layout.fragment_vertretungsplan, container, false); // -> lade Layout aus XML-Datei
         ueberschrift = (TextView) rootView.findViewById(R.id.fragment_vertretungsplan_title);
+        ueberschrift.setTypeface(Resources.roboto_light);
+        Preferences prefs = application.preferences;
+        int color = (Color.red(prefs.primaryColor) + Color.green(prefs.primaryColor) + Color.blue(prefs.primaryColor)) / 3;
+        if (color > 128)
+            ueberschrift.setTextColor(Color.BLACK);
+        else
+            ueberschrift.setTextColor(Color.WHITE);
         ueberschrift.setText(OtherAlgorithms.getDayOfWeek(position));
         progressBar = (ProgressBar) rootView.findViewById(R.id.progress_bar);
         listView = (ExpandableListView) rootView.findViewById(R.id.exp_list_view);
         ueberschriftLayout = (RelativeLayout) rootView.findViewById(R.id.fragment_vertretungsplan_title_layout);
         update();
+
         return rootView;
     }
 
@@ -81,5 +94,8 @@ public class VertretungsplanFragment extends Fragment
             if (progressBar != null)
                 progressBar.setVisibility(View.GONE);
         }
+
+        if (Build.VERSION.SDK_INT >= 16)
+        ueberschriftLayout.setBackground(new ColorDrawable(application.preferences.primaryColor));
     }
 }

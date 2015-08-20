@@ -1,5 +1,7 @@
 package de.tomsapps.vertretungsplanapp.taskmanagement;
 
+import android.graphics.Color;
+
 import de.tomsapps.vertretungsplanapp.core.Preferences;
 import de.tomsapps.vertretungsplanapp.core.Vertretungsplan;
 import de.tomsapps.vertretungsplanapp.core.VertretungsplanApp;
@@ -66,6 +68,12 @@ public class Task
                 // [1] = Statusleiste ausblenden
                 prefs.statusLeisteAuslenden = OtherAlgorithms.getStatusLeisteAusblendenFromInt(Integer.parseInt(settings[1]));
 
+                // [2] = primaryColor
+                prefs.primaryColor = Integer.parseInt(settings[2]);
+
+                // [3] = secondaryColor
+                prefs.secondaryColor = Integer.parseInt(settings[3]);
+
                 app.preferences = prefs;
             }
             else if (args[0].contentEquals("SAVE_SETTINGS"))
@@ -77,6 +85,10 @@ public class Task
                 rawSettings += String.valueOf(OtherAlgorithms.getIntFromSpalte(prefs.gruppierenNach));
                 rawSettings += "§%§";
                 rawSettings += String.valueOf(OtherAlgorithms.getIntFromStatusLeisteAusblenden(prefs.statusLeisteAuslenden));
+                rawSettings += "§%§";
+                rawSettings += String.valueOf(prefs.primaryColor);
+                rawSettings += "§%§";
+                rawSettings += String.valueOf(prefs.secondaryColor);
 
                 EnvironmentInterfaces.LokalStorage.saveData("SETTINGS", rawSettings, app);
             }

@@ -1,14 +1,16 @@
 package de.tomsapps.vertretungsplanapp.gui;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.gesture.GestureOverlayView;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBar;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -16,29 +18,35 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import de.tomsapps.vertretungsplanapp.R;
 import de.tomsapps.vertretungsplanapp.algorithms.OtherAlgorithms;
 import de.tomsapps.vertretungsplanapp.core.Preferences;
+import de.tomsapps.vertretungsplanapp.core.Resources;
 import de.tomsapps.vertretungsplanapp.core.VertretungsplanApp;
 import de.tomsapps.vertretungsplanapp.taskmanagement.AsyncTaskManager;
 import de.tomsapps.vertretungsplanapp.taskmanagement.ITaskOwner;
 import de.tomsapps.vertretungsplanapp.taskmanagement.Task;
 
-public class MainActivity extends FragmentActivity implements  View.OnTouchListener, ITaskOwner
+public class MainActivity extends AppCompatActivity implements  View.OnTouchListener, ITaskOwner
 // Hauptaktivität der Anwendung.
 {
     // globale Verweise
     public MainActivityPageManager tabManager;
-    private VertretungsplanApp    application;
-    private Window                mainWindow;
-    private ViewPager             viewPager;
-    private RelativeLayout        dropDownMenuView;
-    private FrameLayout           mainContent;
-    private GestureOverlayView    gestureOverlay;
+    private VertretungsplanApp     application;
+    private Window                 mainWindow;
+    private ViewPager              viewPager;
+    private RelativeLayout         dropDownMenuView;
+    private FrameLayout            mainContent;
+    private GestureOverlayView     gestureOverlay;
+    private View                   menuActionBar;
     // globale Flags
     private boolean isMenuDownFlag = false;
 
@@ -56,11 +64,8 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
             mainWindow.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // ActionBar ausblenden, sofern vorhanden (API >= 11)
-        if (Build.VERSION.SDK_INT > 11)
-        {
-            ActionBar actionBar = this.getActionBar();
-            if (actionBar != null) actionBar.hide();
-        }
+        ActionBar actionBar = this.getSupportActionBar();
+        if (actionBar != null) actionBar.hide();
 
         // Layout laden und initialisieren, sowie Verweise erstellen
         this.setContentView(R.layout.activity_main);
@@ -68,6 +73,7 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
         gestureOverlay   = (GestureOverlayView) findViewById(R.id.activity_main_gesture_overlay);
         mainContent      = (FrameLayout)        findViewById(R.id.activity_main_main_content);
         viewPager        = (ViewPager)          findViewById(R.id.view_pager);
+        menuActionBar    =                      findViewById(R.id.menu_icon_bar_shadow_1);
 
         gestureOverlay.setOnTouchListener(this);
 
@@ -81,6 +87,11 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
         if (application.getVertretungsplan(4) == null)
             taskManager.addTask(new Task(this, "DOWNLOAD", "Montag"));
 
+        ((Button)findViewById(R.id.button01)).setTypeface(Resources.roboto_light);
+        ((Button)findViewById(R.id.button02)).setTypeface(Resources.roboto_light);
+        ((Button)findViewById(R.id.button03)).setTypeface(Resources.roboto_light);
+        ((Button)findViewById(R.id.button04)).setTypeface(Resources.roboto_light);
+        ((Button)findViewById(R.id.button05)).setTypeface(Resources.roboto_light);
     }
 
     @Override
@@ -90,17 +101,53 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
 
         hideDropDownMenu();
 
-        if (((VertretungsplanApp)getApplication()).preferences.statusLeisteAuslenden != Preferences.StatusLeisteAuslenden.Nie)
+        if (application.preferences.statusLeisteAuslenden != Preferences.StatusLeisteAuslenden.Nie)
             this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         else
             this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        if (Build.VERSION.SDK_INT >= 21)
+        {
+            mainWindow.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            mainWindow.setStatusBarColor(application.preferences.secondaryColor);
+        }
+
+        if (Build.VERSION.SDK_INT >= 16)
+            menuActionBar.setBackground(new ColorDrawable(application.preferences.secondaryColor));
 
         try {
             for (int i = 0; i < tabManager.getCount(); i++)
                 tabManager.updateFragment(i);
         }
         catch (Exception e) {}
+
+        Preferences prefs = application.preferences;
+        int colorMiddle = Color.red(prefs.secondaryColor) + Color.blue(prefs.secondaryColor) + Color.green(prefs.secondaryColor);
+        colorMiddle = colorMiddle / 3;
+        if (colorMiddle > 128)
+        {
+            findViewById(R.id.button_back_image).setBackgroundResource(R.drawable.up_black);
+            findViewById(R.id.button_pref_image).setBackgroundResource(R.drawable.settings_black);
+            findViewById(R.id.button_refresh_image).setBackgroundResource(R.drawable.refresh_black);
+        }
+        else
+        {
+            findViewById(R.id.button_back_image).setBackgroundResource(R.drawable.up_white);
+            findViewById(R.id.button_pref_image).setBackgroundResource(R.drawable.settings_white);
+            findViewById(R.id.button_refresh_image).setBackgroundResource(R.drawable.refresh_white);
+        }
+    }
+
+
+    ArrayList<android.support.v7.app.AlertDialog.Builder> preLoadingDialogs = new ArrayList<android.support.v7.app.AlertDialog.Builder>();
+    @Override
+    protected void onPostResume()
+    {
+        super.onPostResume();
+
+        for (int i = 0; i < preLoadingDialogs.size(); i++)
+            preLoadingDialogs.get(i).create().show();
+        preLoadingDialogs.clear();
     }
 
    @Override
@@ -262,32 +309,27 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
-    public void showErrorDialog(String title, String message)
+    public void showDialog(String title, String message)
     // zeigt einen Informationsdialog an
     {
-        try
-        {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(message);
-            builder.setTitle(title);
-            builder.setCancelable(true);
-            final FragmentActivity activity = this;
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
-            {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i)
-                {
-                    dialogInterface.dismiss();
-                    activity.finish();
-                }
-            });
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+        builder.setMessage(message);
+        builder.setTitle(title);
+        builder.setCancelable(true);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
 
-            // Dialog anzeigen
+        try {
+
             builder.create().show();
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
+            preLoadingDialogs.add(builder);
         }
     }
 
@@ -319,7 +361,7 @@ public class MainActivity extends FragmentActivity implements  View.OnTouchListe
             else if (successfully)
                 application.getApplicationTaskManager().addTask(new Task(this, "ANALYZE", OtherAlgorithms.getDayOfWeek(0)));
             else
-                showErrorDialog("Keine Datenquelle gefunden.", "Es konnten keine Daten geladen werden.\r\nÜberprüfe deine Internetverbindung.");
+                showDialog("Keine Datenquelle gefunden.", "Es konnten keine Daten geladen werden.\r\nÜberprüfe deine Internetverbindung.");
         }
         else if (args[0].contentEquals("ANALYZE"))
         {
