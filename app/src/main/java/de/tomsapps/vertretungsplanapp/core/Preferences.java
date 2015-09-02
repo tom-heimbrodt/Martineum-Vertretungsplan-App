@@ -11,7 +11,7 @@ public class Preferences
         Klasse, Lehrer, Stunde, Fach, Raum
     }
 
-    public StatusLeisteAuslenden statusLeisteAuslenden = StatusLeisteAuslenden.NurVertretungsplan;
+    public StatusLeisteAuslenden statusLeisteAuslenden = StatusLeisteAuslenden.Nie;
 
     public enum StatusLeisteAuslenden
     {
@@ -23,8 +23,8 @@ public class Preferences
     public Preferences()
     {
         gruppierenNach = VertretungsplanSpalte.Klasse;
-        statusLeisteAuslenden = StatusLeisteAuslenden.NurVertretungsplan;
-        primaryColor = Color.rgb(50, 50, 50);
-        secondaryColor = Color.rgb(0, 0, 0);
+        statusLeisteAuslenden = StatusLeisteAuslenden.Nie;
+        primaryColor = Color.rgb(1, 0x47, 0x9B);
+        secondaryColor = Color.rgb(0, 0x28, 0x70);
     }
 }
