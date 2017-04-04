@@ -1,400 +1,410 @@
 package de.tomsapps.vertretungsplanapp.gui;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.gesture.GestureOverlayView;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
-import android.util.DisplayMetrics;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
+import android.content.*;
+import android.gesture.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
+import android.os.*;
+import android.support.v4.view.*;
+import android.support.v7.app.*;
+import android.util.*;
+import android.view.*;
+import android.view.animation.*;
+import android.widget.*;
+import de.tomsapps.vertretungsplanapp.*;
+import de.tomsapps.vertretungsplanapp.algorithms.*;
+import de.tomsapps.vertretungsplanapp.core.*;
+import de.tomsapps.vertretungsplanapp.taskmanagement.*;
 
-import java.util.ArrayList;
+import java.util.*;
 
-import de.tomsapps.vertretungsplanapp.R;
-import de.tomsapps.vertretungsplanapp.algorithms.OtherAlgorithms;
-import de.tomsapps.vertretungsplanapp.core.Preferences;
-import de.tomsapps.vertretungsplanapp.core.Resources;
-import de.tomsapps.vertretungsplanapp.core.VertretungsplanApp;
-import de.tomsapps.vertretungsplanapp.taskmanagement.AsyncTaskManager;
-import de.tomsapps.vertretungsplanapp.taskmanagement.ITaskOwner;
-import de.tomsapps.vertretungsplanapp.taskmanagement.Task;
-
-public class MainActivity extends AppCompatActivity implements  View.OnTouchListener, ITaskOwner
+public class MainActivity extends AppCompatActivity implements View.OnTouchListener, ITaskOwner
 // Hauptaktivität der Anwendung.
 {
-    // globale Verweise
-    public MainActivityPageManager tabManager;
-    private VertretungsplanApp     application;
-    private Window                 mainWindow;
-    private ViewPager              viewPager;
-    private RelativeLayout         dropDownMenuView;
-    private FrameLayout            mainContent;
-    private GestureOverlayView     gestureOverlay;
-    private View                   menuActionBar;
-    // globale Flags
-    private boolean isMenuDownFlag = false;
+	// globale Verweise
+	public  MainActivityPageManager tabManager;
+	private VertretungsplanApp      application;
+	private Window                  mainWindow;
+	private ViewPager               viewPager;
+	private RelativeLayout          dropDownMenuView;
+	private FrameLayout             mainContent;
+	private GestureOverlayView      gestureOverlay;
+	private View                    menuActionBar;
+	// globale Flags
+	private boolean isMenuDownFlag = false;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
-    // Wird aufgerufen, wenn die Aktivität erstellt wird.
-    {
-        // Basisklasse initialisieren und benötigte Verweise ertsellen
-        super.onCreate(savedInstanceState);
-        application = (VertretungsplanApp) this.getApplication();
-        mainWindow  = this.getWindow();
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	// Wird aufgerufen, wenn die Aktivität erstellt wird.
+	{
+		// Basisklasse initialisieren und benötigte Verweise ertsellen
+		super.onCreate(savedInstanceState);
+		application = (VertretungsplanApp) this.getApplication();
+		mainWindow = this.getWindow();
 
-        // Anwendung im Vollbild ausführen
-        if (application.preferences.statusLeisteAuslenden != Preferences.StatusLeisteAuslenden.Nie)
-            mainWindow.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		// Anwendung im Vollbild ausführen
+		if (application.preferences.statusLeisteAuslenden != Preferences.StatusLeisteAuslenden.Nie)
+			mainWindow.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams
+					.FLAG_FULLSCREEN);
 
-        // ActionBar ausblenden, sofern vorhanden (API >= 11)
-        ActionBar actionBar = this.getSupportActionBar();
-        if (actionBar != null) actionBar.hide();
+		// ActionBar ausblenden, sofern vorhanden (API >= 11)
+		ActionBar actionBar = this.getSupportActionBar();
+		if (actionBar != null) actionBar.hide();
 
-        // Layout laden und initialisieren, sowie Verweise erstellen
-        this.setContentView(R.layout.activity_main);
-        dropDownMenuView = (RelativeLayout)     findViewById(R.id.activity_main_drop_down_menu);
-        gestureOverlay   = (GestureOverlayView) findViewById(R.id.activity_main_gesture_overlay);
-        mainContent      = (FrameLayout)        findViewById(R.id.activity_main_main_content);
-        viewPager        = (ViewPager)          findViewById(R.id.view_pager);
-        menuActionBar    =                      findViewById(R.id.menu_icon_bar_shadow_1);
+		// Layout laden und initialisieren, sowie Verweise erstellen
+		this.setContentView(R.layout.activity_main);
+		dropDownMenuView = (RelativeLayout) findViewById(R.id.activity_main_drop_down_menu);
+		gestureOverlay = (GestureOverlayView) findViewById(R.id.activity_main_gesture_overlay);
+		mainContent = (FrameLayout) findViewById(R.id.activity_main_main_content);
+		viewPager = (ViewPager) findViewById(R.id.view_pager);
+		menuActionBar = findViewById(R.id.menu_icon_bar_shadow_1);
 
-        gestureOverlay.setOnTouchListener(this);
+		gestureOverlay.setOnTouchListener(this);
 
-        // viewPager zeigt die Tabs an, die von tabManager verwaltet werden
-        viewPager.setOffscreenPageLimit(5);
-        viewPager.setAdapter(tabManager = new MainActivityPageManager(this.getSupportFragmentManager(), application, this));
+		// viewPager zeigt die Tabs an, die von tabManager verwaltet werden
+		viewPager.setOffscreenPageLimit(5);
+		viewPager.setAdapter(tabManager = new MainActivityPageManager(this.getSupportFragmentManager(), application,
+                this));
 
-        // VertretungsplÃ¤ne asynchron aktualisieren
-        AsyncTaskManager taskManager = application.getApplicationTaskManager();
+		// VertretungsplÃ¤ne asynchron aktualisieren
+		AsyncTaskManager taskManager = application.getApplicationTaskManager();
 
-        if (application.getVertretungsplan(4) == null)
-            taskManager.addTask(new Task(this, "DOWNLOAD", "Montag"));
+		if (application.getVertretungsplan(4) == null)
+			taskManager.addTask(new Task(this, "DOWNLOAD", "Montag"));
 
-        ((Button)findViewById(R.id.button01)).setTypeface(Resources.roboto_light);
-        ((Button)findViewById(R.id.button02)).setTypeface(Resources.roboto_light);
-        ((Button)findViewById(R.id.button03)).setTypeface(Resources.roboto_light);
-        ((Button)findViewById(R.id.button04)).setTypeface(Resources.roboto_light);
-        ((Button)findViewById(R.id.button05)).setTypeface(Resources.roboto_light);
-    }
+		((Button) findViewById(R.id.button01)).setTypeface(Resources.roboto_light);
+		((Button) findViewById(R.id.button02)).setTypeface(Resources.roboto_light);
+		((Button) findViewById(R.id.button03)).setTypeface(Resources.roboto_light);
+		((Button) findViewById(R.id.button04)).setTypeface(Resources.roboto_light);
+		((Button) findViewById(R.id.button05)).setTypeface(Resources.roboto_light);
+	}
 
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
 
-        hideDropDownMenu();
+		hideDropDownMenu();
 
-        if (application.preferences.statusLeisteAuslenden != Preferences.StatusLeisteAuslenden.Nie)
-            this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        else
-            this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		if (application.preferences.statusLeisteAuslenden != Preferences.StatusLeisteAuslenden.Nie)
+			this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams
+                    .FLAG_FULLSCREEN);
+		else
+			this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        if (Build.VERSION.SDK_INT >= 21)
-        {
-            mainWindow.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            mainWindow.setStatusBarColor(application.preferences.secondaryColor);
-        }
+		if (Build.VERSION.SDK_INT >= 21)
+		{
+			mainWindow.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+			mainWindow.setStatusBarColor(application.preferences.secondaryColor);
+		}
 
-        if (Build.VERSION.SDK_INT >= 16)
-            menuActionBar.setBackground(new ColorDrawable(application.preferences.secondaryColor));
+		if (Build.VERSION.SDK_INT >= 16)
+			menuActionBar.setBackground(new ColorDrawable(application.preferences.secondaryColor));
 
-        try {
-            for (int i = 0; i < tabManager.getCount(); i++)
-                tabManager.updateFragment(i);
-        }
-        catch (Exception e) {}
+		try
+		{
+			for (int i = 0; i < tabManager.getCount(); i++)
+				tabManager.updateFragment(i);
+		}
+		catch (Exception e) {}
 
-        Preferences prefs = application.preferences;
-        int colorMiddle = Color.red(prefs.secondaryColor) + Color.blue(prefs.secondaryColor) + Color.green(prefs.secondaryColor);
-        colorMiddle = colorMiddle / 3;
-        if (colorMiddle > 128)
-        {
-            findViewById(R.id.button_back_image).setBackgroundResource(R.drawable.up_black);
-            findViewById(R.id.button_pref_image).setBackgroundResource(R.drawable.settings_black);
-            findViewById(R.id.button_refresh_image).setBackgroundResource(R.drawable.refresh_black);
-        }
-        else
-        {
-            findViewById(R.id.button_back_image).setBackgroundResource(R.drawable.up_white);
-            findViewById(R.id.button_pref_image).setBackgroundResource(R.drawable.settings_white);
-            findViewById(R.id.button_refresh_image).setBackgroundResource(R.drawable.refresh_white);
-        }
-    }
+		Preferences prefs       = application.preferences;
+		int         colorMiddle = Color.red(prefs.secondaryColor) + Color.blue(prefs.secondaryColor) + Color.green
+                (prefs.secondaryColor);
+		colorMiddle = colorMiddle / 3;
+		if (colorMiddle > 128)
+		{
+			findViewById(R.id.button_back_image).setBackgroundResource(R.drawable.up_black);
+			findViewById(R.id.button_pref_image).setBackgroundResource(R.drawable.settings_black);
+			findViewById(R.id.button_refresh_image).setBackgroundResource(R.drawable.refresh_black);
+		}
+		else
+		{
+			findViewById(R.id.button_back_image).setBackgroundResource(R.drawable.up_white);
+			findViewById(R.id.button_pref_image).setBackgroundResource(R.drawable.settings_white);
+			findViewById(R.id.button_refresh_image).setBackgroundResource(R.drawable.refresh_white);
+		}
+	}
 
 
-    ArrayList<android.support.v7.app.AlertDialog.Builder> preLoadingDialogs = new ArrayList<android.support.v7.app.AlertDialog.Builder>();
-    @Override
-    protected void onPostResume()
-    {
-        super.onPostResume();
+	ArrayList<android.support.v7.app.AlertDialog.Builder> preLoadingDialogs = new ArrayList<android.support.v7.app
+            .AlertDialog.Builder>();
 
-        for (int i = 0; i < preLoadingDialogs.size(); i++)
-            preLoadingDialogs.get(i).create().show();
-        preLoadingDialogs.clear();
-    }
+	@Override
+	protected void onPostResume()
+	{
+		super.onPostResume();
 
-   @Override
-   public boolean dispatchKeyEvent(KeyEvent event)
-   // Wird ausgelöst, wenn eine Taste gedrückt wird.
-   // Gibt true zurück, wenn Ereignis nicht länger behandelt werden soll, ansonsten false
-   {
-       if (event.getAction() == KeyEvent.ACTION_UP)
-       {
-           int keyCode = event.getKeyCode();
-           switch (keyCode)
-           {
-               case KeyEvent.KEYCODE_BACK:
-                   if (isMenuDownFlag)
-                       hideDropDownMenu();
-                   else
-                       this.finish();
-                   return true;
-               case KeyEvent.KEYCODE_MENU:
-                   toggleDropDownMenu();
-                   return true;
-               default:
-                   return false;
-           }
-       }
-       else
-           return true; // --> andere Aktionen, wie ACTION_DOWN werden einfach nicht beachtet
-   }
+		for (int i = 0; i < preLoadingDialogs.size(); i++)
+			preLoadingDialogs.get(i).create().show();
+		preLoadingDialogs.clear();
+	}
 
-    // Prozeduren um das Drop-Down-Menu anzuzeigen bzw. zu verstecken
-    public void toggleDropDownMenu()
-    {
-        if (!isMenuDownFlag)
-            showDropDownMenu();
-        else
-            hideDropDownMenu();
-    }
-    public void showDropDownMenu()
-    {
-        viewPager.clearAnimation();
-        // ViewPager nach untern bewegen, wenn möglich mit Animation
-        if (Build.VERSION.SDK_INT >= 14)
-            viewPager.animate().translationY(dropDownMenuView.getHeight()).setInterpolator(new AccelerateDecelerateInterpolator()).start();
-        else if (Build.VERSION.SDK_INT >= 11)
-            viewPager.setY(dropDownMenuView.getHeight());
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event)
+	// Wird ausgelöst, wenn eine Taste gedrückt wird.
+	// Gibt true zurück, wenn Ereignis nicht länger behandelt werden soll, ansonsten false
+	{
+		if (event.getAction() == KeyEvent.ACTION_UP)
+		{
+			int keyCode = event.getKeyCode();
+			switch (keyCode)
+			{
+				case KeyEvent.KEYCODE_BACK:
+					if (isMenuDownFlag)
+						hideDropDownMenu();
+					else
+						this.finish();
+					return true;
+				case KeyEvent.KEYCODE_MENU:
+					toggleDropDownMenu();
+					return true;
+				default:
+					return false;
+			}
+		}
+		else
+			return true; // --> andere Aktionen, wie ACTION_DOWN werden einfach nicht beachtet
+	}
 
-        isMenuDownFlag = true;
-    }
-    public void hideDropDownMenu()
-    {
-        viewPager.clearAnimation();
-        // ViewPager nach oben bewegen, wenn möglich mit Animation
-        if (Build.VERSION.SDK_INT >= 14)
-            viewPager.animate().translationY(0).setInterpolator(new AccelerateDecelerateInterpolator()).start();
-        else if (Build.VERSION.SDK_INT >= 11)
-            viewPager.setY(dropDownMenuView.getHeight());
+	// Prozeduren um das Drop-Down-Menu anzuzeigen bzw. zu verstecken
+	public void toggleDropDownMenu()
+	{
+		if (!isMenuDownFlag)
+			showDropDownMenu();
+		else
+			hideDropDownMenu();
+	}
 
-        isMenuDownFlag = false;
-    }
+	public void showDropDownMenu()
+	{
+		viewPager.clearAnimation();
+		// ViewPager nach untern bewegen, wenn möglich mit Animation
+		if (Build.VERSION.SDK_INT >= 14)
+			viewPager.animate().translationY(dropDownMenuView.getHeight()).setInterpolator(new
+                    AccelerateDecelerateInterpolator()).start();
+		else if (Build.VERSION.SDK_INT >= 11)
+			viewPager.setY(dropDownMenuView.getHeight());
 
-    public void layoutClicked(View view)
-    // wird ausgeführt, wenn auf ein Layout (-> Button) geklickt wurde
-    {
-        int id = view.getId();
-        switch (id)
-        {
-            case R.id.button01:
-                viewPager.setCurrentItem(0, true);
-                hideDropDownMenu();
-                break;
-            case R.id.button02:
-                viewPager.setCurrentItem(1, true);
-                hideDropDownMenu();
-                break;
-            case R.id.button03:
-                viewPager.setCurrentItem(2, true);
-                hideDropDownMenu();
-                break;
-            case R.id.button04:
-                viewPager.setCurrentItem(3, true);
-                hideDropDownMenu();
-                break;
-            case R.id.button05:
-                viewPager.setCurrentItem(4, true);
-                hideDropDownMenu();
-                break;
-            case R.id.button_back:
-                hideDropDownMenu();
-                break;
-            case R.id.button_pref:
-                // Einstellungsactivity starten
-                Intent intent = new Intent(this, PreferencesActivity.class);
-                this.startActivity(intent);
-                break;
-            case R.id.button_refresh:
-                application.taskManager.addTask(new Task(this, "DOWNLOAD", "Montag"));
-                showToast("Daten werden aktualisiert . . .");
-                hideDropDownMenu();
-                break;
-            case R.id.fragment_vertretungsplan_title:
-            case R.id.fragment_vertretungsplan_title_layout:
-                // do nothing
-                break;
-        }
-    }
+		isMenuDownFlag = true;
+	}
 
-    private float dragYStart;
-    private float pDragY;
-    @Override
-    public boolean onTouch(View view, MotionEvent motionEvent)
-    // wird ausgeführt, wenn auf ein View-Objekt geklickt wird und diese Activity als onTouchListener gesetzt wurde
-    {
-        if (Build.VERSION.SDK_INT >= 11)
-            switch (motionEvent.getActionMasked())
-            {
-                case MotionEvent.ACTION_DOWN: // -> wird einmal zu Beginn ausgeführt, Variablen werden initialisiert
-                    dragYStart = motionEvent.getY(0);
-                    pDragY = dragYStart;
-                    break;
+	public void hideDropDownMenu()
+	{
+		viewPager.clearAnimation();
+		// ViewPager nach oben bewegen, wenn möglich mit Animation
+		if (Build.VERSION.SDK_INT >= 14)
+			viewPager.animate().translationY(0).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+		else if (Build.VERSION.SDK_INT >= 11)
+			viewPager.setY(dropDownMenuView.getHeight());
 
-                case MotionEvent.ACTION_MOVE: // -> wird jedesmal ausgeführt, wenn Finger/Stift/WasAuchImmer bewegt wird
-                    //    -> Aktualisierung der Herunterziehanimation
-                    if (dragYStart <= tabManager.getItem(viewPager.getCurrentItem()).getTitleHeight())
-                    {
-                        if (motionEvent.getY() - dragYStart > 10)
-                        {
-                            float translateYBy = motionEvent.getY() - pDragY;
-                            viewPager.setY(translateYBy + viewPager.getY());
-                        }
-                    }
-                    pDragY = motionEvent.getY();
-                    break;
+		isMenuDownFlag = false;
+	}
 
-                case MotionEvent.ACTION_UP:     //  -> wird ausgeführt, wenn die Aktion beendet wurde
-                case MotionEvent.ACTION_CANCEL: //     -> prüfen ob das Menu unten ist oder nicht
-                    float dif = motionEvent.getY() - dragYStart;
-                    DisplayMetrics displayMetrics = new DisplayMetrics();
-                    this.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-                    int displayHeight = displayMetrics.heightPixels;
-                    float GESTURE_DROP_DOWN_MENU_MIN_Y_DIFFERENZ =
-                            (displayHeight / 2f > dropDownMenuView.getHeight()) ?
-                                    dropDownMenuView.getHeight() :
-                                    displayHeight / 2f;
-                    if (dif > GESTURE_DROP_DOWN_MENU_MIN_Y_DIFFERENZ && dragYStart <= tabManager.getItem(viewPager.getCurrentItem()).getTitleHeight())
-                        showDropDownMenu();
-                    else if (!isMenuDownFlag)
-                        hideDropDownMenu();
-                    break;
-            }
+	public void layoutClicked(View view)
+	// wird ausgeführt, wenn auf ein Layout (-> Button) geklickt wurde
+	{
+		int id = view.getId();
+		switch (id)
+		{
+			case R.id.button01:
+				viewPager.setCurrentItem(0, true);
+				hideDropDownMenu();
+				break;
+			case R.id.button02:
+				viewPager.setCurrentItem(1, true);
+				hideDropDownMenu();
+				break;
+			case R.id.button03:
+				viewPager.setCurrentItem(2, true);
+				hideDropDownMenu();
+				break;
+			case R.id.button04:
+				viewPager.setCurrentItem(3, true);
+				hideDropDownMenu();
+				break;
+			case R.id.button05:
+				viewPager.setCurrentItem(4, true);
+				hideDropDownMenu();
+				break;
+			case R.id.button_back:
+				hideDropDownMenu();
+				break;
+			case R.id.button_pref:
+				// Einstellungsactivity starten
+				Intent intent = new Intent(this, PreferencesActivity.class);
+				this.startActivity(intent);
+				break;
+			case R.id.button_refresh:
+				application.taskManager.addTask(new Task(this, "DOWNLOAD", "Montag"));
+				showToast("Daten werden aktualisiert . . .");
+				hideDropDownMenu();
+				break;
+			case R.id.fragment_vertretungsplan_title:
+			case R.id.fragment_vertretungsplan_title_layout:
+				// do nothing
+				break;
+		}
+	}
 
-        mainContent.dispatchTouchEvent(motionEvent);
-        // -> damit auch noch unter dem GestureOverlay liegende Objekte Touch Ereignisse empfangen können
+	private float dragYStart;
+	private float pDragY;
 
-        return true;
-    }
+	@Override
+	public boolean onTouch(View view, MotionEvent motionEvent)
+	// wird ausgeführt, wenn auf ein View-Objekt geklickt wird und diese Activity als onTouchListener gesetzt wurde
+	{
+		if (Build.VERSION.SDK_INT >= 11)
+			switch (motionEvent.getActionMasked())
+			{
+				case MotionEvent.ACTION_DOWN: // -> wird einmal zu Beginn ausgeführt, Variablen werden initialisiert
+					dragYStart = motionEvent.getY(0);
+					pDragY = dragYStart;
+					break;
 
-    public void showToast(String message)
-    {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-    }
+				case MotionEvent.ACTION_MOVE: // -> wird jedesmal ausgeführt, wenn Finger/Stift/WasAuchImmer bewegt
+				// wird
+					//    -> Aktualisierung der Herunterziehanimation
+					if (dragYStart <= tabManager.getItem(viewPager.getCurrentItem()).getTitleHeight())
+					{
+						if (motionEvent.getY() - dragYStart > 10)
+						{
+							float translateYBy = motionEvent.getY() - pDragY;
+							viewPager.setY(translateYBy + viewPager.getY());
+						}
+					}
+					pDragY = motionEvent.getY();
+					break;
 
-    public void showDialog(String title, String message)
-    // zeigt einen Informationsdialog an
-    {
-        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-        builder.setMessage(message);
-        builder.setTitle(title);
-        builder.setCancelable(true);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
+				case MotionEvent.ACTION_UP:     //  -> wird ausgeführt, wenn die Aktion beendet wurde
+				case MotionEvent.ACTION_CANCEL: //     -> prüfen ob das Menu unten ist oder nicht
+					float dif = motionEvent.getY() - dragYStart;
+					DisplayMetrics displayMetrics = new DisplayMetrics();
+					this.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+					int displayHeight = displayMetrics.heightPixels;
+					float GESTURE_DROP_DOWN_MENU_MIN_Y_DIFFERENZ =
+							(displayHeight / 2f > dropDownMenuView.getHeight()) ?
+									dropDownMenuView.getHeight() :
+									displayHeight / 2f;
+					if (dif > GESTURE_DROP_DOWN_MENU_MIN_Y_DIFFERENZ && dragYStart <= tabManager.getItem(viewPager
+                            .getCurrentItem()).getTitleHeight())
+						showDropDownMenu();
+					else if (!isMenuDownFlag)
+						hideDropDownMenu();
+					break;
+			}
 
-        try {
+		mainContent.dispatchTouchEvent(motionEvent);
+		// -> damit auch noch unter dem GestureOverlay liegende Objekte Touch Ereignisse empfangen können
 
-            builder.create().show();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            preLoadingDialogs.add(builder);
-        }
-    }
+		return true;
+	}
 
-    @Override
-    public void taskFinished(Task task, boolean successfully)
-    {
-        String[] args = task.getArgs();
-        if (args[0].contentEquals("DOWNLOAD"))
-        {
-            int index = OtherAlgorithms.getIndexFromDay(args[1]);
-            if (successfully)
-            {
-                if (index <= 3)
-                    // nÃ¤chsten Plan herunterladen
-                    application.getApplicationTaskManager().addTask(new Task(this, "DOWNLOAD", OtherAlgorithms.getDayOfWeek(index + 1)));
-                else
-                    application.getApplicationTaskManager().addTask(new Task(this, "ANALYZE", OtherAlgorithms.getDayOfWeek(0)));
-            }
-            else
-            {
-                application.getApplicationTaskManager().addTask(new Task(this, "LOAD_LOCAL", args[1]));
-            }
-        }
-        else if (args[0].contentEquals("LOAD_LOCAL"))
-        {
-            int index = OtherAlgorithms.getIndexFromDay(args[1]);
-            if (index <= 3 && successfully)
-                application.getApplicationTaskManager().addTask(new Task(this, "DOWNLOAD", OtherAlgorithms.getDayOfWeek(index + 1)));
-            else if (successfully)
-                application.getApplicationTaskManager().addTask(new Task(this, "ANALYZE", OtherAlgorithms.getDayOfWeek(0)));
-            else
-                showDialog("Keine Datenquelle gefunden.", "Es konnten keine Daten geladen werden.\r\nÜberprüfe deine Internetverbindung.");
-        }
-        else if (args[0].contentEquals("ANALYZE"))
-        {
-            final int index = OtherAlgorithms.getIndexFromDay(args[1]);
-            if (successfully)
-            {
-                this.runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        try {
-                            tabManager.updateFragment(index);
-                        } catch(Exception e) { e.printStackTrace(); }
-                    }
-                });
-            }
+	public void showToast(String message)
+	{
+		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+	}
 
-            if (index <= 3)
-                application.getApplicationTaskManager().addTask(new Task(this, "ANALYZE", OtherAlgorithms.getDayOfWeek(index + 1)));
-            else
-                application.getApplicationTaskManager().addTask(new Task(this, "SAVE_LOCAL", OtherAlgorithms.getDayOfWeek(0)));
-        }
-        else if (args[0].contentEquals("SAVE_LOCAL"))
-        {
-            int index = OtherAlgorithms.getIndexFromDay(args[1]);
-            if (index <= 3)
-                application.getApplicationTaskManager().addTask(new Task(this, "SAVE_LOCAL", OtherAlgorithms.getDayOfWeek(index + 1)));
-        }
-        else if (args[0].contentEquals("LOAD_SETTINGS"))
-        {
-            try { for (int i = 0; i < tabManager.getCount(); i++) tabManager.updateFragment(i); }
-            catch (Exception e) {}
-        }
-    }
+	public void showDialog(String title, String message)
+	// zeigt einen Informationsdialog an
+	{
+		android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+		builder.setMessage(message);
+		builder.setTitle(title);
+		builder.setCancelable(true);
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialogInterface, int i)
+			{
+				dialogInterface.dismiss();
+			}
+		});
+
+		try
+		{
+
+			builder.create().show();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			preLoadingDialogs.add(builder);
+		}
+	}
+
+	@Override
+	public void taskFinished(Task task, boolean successfully)
+	{
+		String[] args = task.getArgs();
+		if (args[0].contentEquals("DOWNLOAD"))
+		{
+			int index = OtherAlgorithms.getIndexFromDay(args[1]);
+			if (successfully)
+			{
+				if (index <= 3)
+					// nÃ¤chsten Plan herunterladen
+					application.getApplicationTaskManager().addTask(new Task(this, "DOWNLOAD", OtherAlgorithms
+                            .getDayOfWeek(index + 1)));
+				else
+					application.getApplicationTaskManager().addTask(new Task(this, "ANALYZE", OtherAlgorithms
+                            .getDayOfWeek(0)));
+			}
+			else
+			{
+				application.getApplicationTaskManager().addTask(new Task(this, "LOAD_LOCAL", args[1]));
+			}
+		}
+		else if (args[0].contentEquals("LOAD_LOCAL"))
+		{
+			int index = OtherAlgorithms.getIndexFromDay(args[1]);
+			if (index <= 3 && successfully)
+				application.getApplicationTaskManager().addTask(new Task(this, "DOWNLOAD", OtherAlgorithms
+                        .getDayOfWeek(index + 1)));
+			else if (successfully)
+				application.getApplicationTaskManager().addTask(new Task(this, "ANALYZE", OtherAlgorithms.getDayOfWeek
+                        (0)));
+			else
+				showDialog("Keine Datenquelle gefunden.", "Es konnten keine Daten geladen werden.\r\nÜberprüfe deine " +
+                        "Internetverbindung.");
+		}
+		else if (args[0].contentEquals("ANALYZE"))
+		{
+			final int index = OtherAlgorithms.getIndexFromDay(args[1]);
+			if (successfully)
+			{
+				this.runOnUiThread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						try
+						{
+							tabManager.updateFragment(index);
+						}
+						catch (Exception e) { e.printStackTrace(); }
+					}
+				});
+			}
+
+			if (index <= 3)
+				application.getApplicationTaskManager().addTask(new Task(this, "ANALYZE", OtherAlgorithms.getDayOfWeek
+                        (index + 1)));
+			else
+				application.getApplicationTaskManager().addTask(new Task(this, "SAVE_LOCAL", OtherAlgorithms
+                        .getDayOfWeek(0)));
+		}
+		else if (args[0].contentEquals("SAVE_LOCAL"))
+		{
+			int index = OtherAlgorithms.getIndexFromDay(args[1]);
+			if (index <= 3)
+				application.getApplicationTaskManager().addTask(new Task(this, "SAVE_LOCAL", OtherAlgorithms
+                        .getDayOfWeek(index + 1)));
+		}
+		else if (args[0].contentEquals("LOAD_SETTINGS"))
+		{
+			try { for (int i = 0; i < tabManager.getCount(); i++) tabManager.updateFragment(i); }
+			catch (Exception e) {}
+		}
+	}
 }
