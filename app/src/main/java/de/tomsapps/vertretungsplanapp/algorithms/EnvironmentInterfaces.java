@@ -31,11 +31,11 @@ public final class EnvironmentInterfaces
             // 3 -> Donnerstag
             // 4 -> Freitag
             {
-                case 0:  return "http://www.martineum-halberstadt.de/wb/media/plaene/vpmo.html";
-                case 1:  return "http://www.martineum-halberstadt.de/wb/media/plaene/vpdi.html";
-                case 2:  return "http://www.martineum-halberstadt.de/wb/media/plaene/vpmi.html";
-                case 3:  return "http://www.martineum-halberstadt.de/wb/media/plaene/vpdo.html";
-                case 4:  return "http://www.martineum-halberstadt.de/wb/media/plaene/vpfr.html";
+                case 0:  return "http://www.martineum-halberstadt.de/mobil/vpmo.html";
+                case 1:  return "http://www.martineum-halberstadt.de/mobil/vpdi.html";
+                case 2:  return "http://www.martineum-halberstadt.de/mobil/vpmi.html";
+                case 3:  return "http://www.martineum-halberstadt.de/mobil/vpdo.html";
+                case 4:  return "http://www.martineum-halberstadt.de/mobil/vpfr.html";
                 default: throw new IllegalArgumentException("ID außerhalb des Definitionsbereiches.");
             }
         }
