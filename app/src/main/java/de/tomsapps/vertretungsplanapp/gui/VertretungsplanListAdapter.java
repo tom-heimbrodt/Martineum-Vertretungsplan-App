@@ -76,10 +76,18 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
                 if (zelle.contentEquals("")) zelle = "keine Angabe";
 
             ArrayList<String> unitGroupNames = new ArrayList<String>();
+
             // generate UnitGroupNames (durch ',' getrennte Klassen und weglassen der Kurse nach '/'
-            int index = -1, pIndex = 0;
             int endIndex = (application.preferences.gruppierenNach == Preferences.VertretungsplanSpalte.Klasse) ? zelle.indexOf("/") : zelle.length();
             if (endIndex == -1) endIndex = zelle.length();
+
+            // versuchen ranges aufzulösen
+            zelle = expandRanges(zelle.substring(0, endIndex));
+
+            int index = -1, pIndex = 0;
+            endIndex = (application.preferences.gruppierenNach == Preferences.VertretungsplanSpalte.Klasse) ? zelle.indexOf("/") : zelle.length();
+            if (endIndex == -1) endIndex = zelle.length();
+
             do {
                 pIndex = index + 1;
                 index = zelle.indexOf(",", pIndex + 1);
@@ -122,6 +130,8 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
                     for (int i = 0; i < lhs.name.length(); i++) {
                         if (lhs.name.charAt(i) >= '0' && lhs.name.charAt(i) <= '9')
                             number1IndexEndValue = i;
+                        else
+                            break;
                     }
                     if (number1IndexEndValue != -1)
                         number1 = Integer.parseInt(lhs.name.substring(0, number1IndexEndValue + 1));
@@ -130,6 +140,8 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
                     for (int i = 0; i < rhs.name.length(); i++) {
                         if (rhs.name.charAt(i) >= '0' && rhs.name.charAt(i) <= '9')
                             number2IndexEndValue = i;
+                        else
+                            break;
                     }
                     if (number2IndexEndValue != -1)
                         number2 = Integer.parseInt(rhs.name.substring(0, number2IndexEndValue + 1));
@@ -159,6 +171,78 @@ public class VertretungsplanListAdapter extends BaseExpandableListAdapter
                     return 0;
             }
         });
+    }
+
+    private String expandRanges(String _input)
+    /* expands class ranges:
+     *   5a,6a-7b,8b-8c --> 5a,6a,6b,7a,7b,8b,8c
+     */
+    {
+        int _sectionStart = 0;
+        int _sectionEnd = _input.indexOf(",");
+        if (_sectionEnd == -1) _sectionEnd = _input.length();
+
+	    StringBuilder _returnBuilder = new StringBuilder();
+	    boolean _prependComma = false;
+
+        do
+        {
+            int _seperatorIndex = _input.indexOf("-", _sectionStart);
+
+            if (_seperatorIndex > _sectionStart &&
+				_seperatorIndex < _sectionEnd)
+            {
+                try
+                {
+                    ArrayList<String> _tmpList = new ArrayList<>();
+
+                    String _firstParam  = _input.substring(_sectionStart, _seperatorIndex).trim();
+                    String _secondParam = _input.substring(_seperatorIndex + 1, _sectionEnd).trim();
+
+                    int _firstNumber = Integer.parseInt(_firstParam.substring(0, _firstParam.length() - 1));
+                    _firstParam = _firstParam.substring(_firstParam.length() - 1);
+
+                    int _secondNumber = Integer.parseInt(_secondParam.substring(0, _secondParam.length() - 1));
+                    _secondParam = _secondParam.substring((_secondParam.length() - 1));
+
+                    for (int _num = _firstNumber; _num <= _secondNumber; _num++)
+                        for (char _char = _firstParam.charAt(_firstParam.length() - 1);
+                             _char <= _secondParam.charAt(_secondParam.length() - 1);
+                             _char++)
+                        {
+                            if (_prependComma)
+								_returnBuilder.append("," + String.valueOf(_num) + _char);
+                            else
+                                _returnBuilder.append(String.valueOf(_num) + _char);
+
+                            _prependComma = true;
+                        }
+                }
+                catch (Exception e)
+                {
+	                if (_prependComma)
+						_returnBuilder.append("," + _input.substring(_sectionStart, _sectionEnd));
+	                else
+						_returnBuilder.append(_input.substring(_sectionStart, _sectionEnd));
+
+                    _prependComma = true;
+                }
+            }
+            else
+            {
+                if (_prependComma)
+					_returnBuilder.append("," + _input.substring(_sectionStart, _sectionEnd));
+                else
+					_returnBuilder.append(_input.substring(_sectionStart, _sectionEnd));
+
+                _prependComma = true;
+            }
+
+	        _sectionStart = _sectionEnd + 1;
+        }
+        while ((_sectionEnd = _input.indexOf(",", _sectionEnd + 1)) != -1);
+
+        return _returnBuilder.toString();
     }
 
     // region überschriebene Methoden der Basis-Klasse

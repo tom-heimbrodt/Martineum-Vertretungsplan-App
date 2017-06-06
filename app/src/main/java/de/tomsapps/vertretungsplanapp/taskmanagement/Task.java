@@ -52,7 +52,7 @@ public class Task
                 int index = OtherAlgorithms.getIndexFromDay(args[1]);
                 if (app.getVertretungsplanRawData(index) != null && !app.getVertretungsplanRawData(index).isEmpty()) {
                     EnvironmentInterfaces.LokalStorage.saveData(args[1].toUpperCase() + "_HTML_DATA", app.getVertretungsplanRawData(index), app);
-                    app.setVertretungsplanRawData(index, null);
+                    //app.setVertretungsplanRawData(index, null);
                 }
             }
             else if (args[0].contentEquals("LOAD_SETTINGS"))

@@ -12,6 +12,11 @@
         android:icon="@drawable/ic_launcher"
         android:label="Martineum Vertretungsplan App"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="de.tomsapps.vertretungsplanapp.gui.MainActivity" />
+
         <activity
             android:name=".gui.MainActivity"
             android:label="@string/title_activity_main">
@@ -20,15 +25,15 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <meta-data android:name="android.webkit.WebView.MetricsOptOut"
+                       android:value="true" />
         </activity>
 
         <activity
             android:name="de.tomsapps.vertretungsplanapp.gui.PreferencesActivity"
 
             android:parentActivityName="de.tomsapps.vertretungsplanapp.gui.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.tomsapps.vertretungsplanapp.gui.MainActivity" />
         </activity>
 
         <activity

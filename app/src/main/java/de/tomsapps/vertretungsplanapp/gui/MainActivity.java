@@ -116,13 +116,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 		{
 			findViewById(R.id.button_back_image).setBackgroundResource(R.drawable.up_black);
 			findViewById(R.id.button_pref_image).setBackgroundResource(R.drawable.settings_black);
-			findViewById(R.id.button_refresh_image).setBackgroundResource(R.drawable.refresh_black);
+			findViewById(R.id.button_html_image).setBackgroundResource(R.drawable.ic_style_black_24dp);
 		}
 		else
 		{
 			findViewById(R.id.button_back_image).setBackgroundResource(R.drawable.up_white);
 			findViewById(R.id.button_pref_image).setBackgroundResource(R.drawable.settings_white);
-			findViewById(R.id.button_refresh_image).setBackgroundResource(R.drawable.refresh_white);
+			findViewById(R.id.button_html_image).setBackgroundResource(R.drawable.ic_style_white_24dp);
 		}
 	}
 
@@ -235,9 +235,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 				Intent intent = new Intent(this, PreferencesActivity.class);
 				this.startActivity(intent);
 				break;
-			case R.id.button_refresh:
-				application.taskManager.addTask(new Task(this, "DOWNLOAD", "Montag"));
-				showToast("Daten werden aktualisiert . . .");
+			case R.id.button_html:
+				application.showHTML = !application.showHTML;
+				for (int i = 0; i < 5; i++)
+					tabManager.updateFragment(i);
 				hideDropDownMenu();
 				break;
 			case R.id.fragment_vertretungsplan_title:

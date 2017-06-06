@@ -8,8 +8,8 @@ android {
         applicationId "de.tomsapps.vertretungsplanapp"
         minSdkVersion 7
         targetSdkVersion 22
-        versionCode 1022
-        versionName "DELTA 2 (1.2.2)"
+        versionCode 1023
+        versionName "DELTA 2 (1.2.3)"
     }
     buildTypes {
         release {

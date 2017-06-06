@@ -1,14 +1,20 @@
 package de.tomsapps.vertretungsplanapp.gui;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -29,6 +35,8 @@ public class VertretungsplanFragment extends Fragment
     TextView ueberschrift;
     RelativeLayout ueberschriftLayout;
     VertretungsplanListAdapter listViewAdapter;
+
+    WebView webview;
 
     MainActivity activity;
     MainActivityPageManager tabManager;
@@ -76,6 +84,8 @@ public class VertretungsplanFragment extends Fragment
         progressBar = (ProgressBar) rootView.findViewById(R.id.progress_bar);
         listView = (ExpandableListView) rootView.findViewById(R.id.exp_list_view);
         ueberschriftLayout = (RelativeLayout) rootView.findViewById(R.id.fragment_vertretungsplan_title_layout);
+        webview = (WebView) rootView.findViewById(R.id.fragment_vertretungsplan_webview);
+
         update();
 
         return rootView;
@@ -84,18 +94,41 @@ public class VertretungsplanFragment extends Fragment
     public void update()
     // aktualisiert das Layout
     {
-        if (application.getVertretungsplan(position) != null && listView != null)
+		if (application.getVertretungsplan(position) != null && !application.showHTML)
+		{
+			if (listView != null)
+			{
+				listView.setAdapter(listViewAdapter = new VertretungsplanListAdapter(position, this.getActivity(), application));
+				// Datum in den Titel schreiben
+				ueberschrift.setText(application.getVertretungsplan(position).getDate());
+				// Progressbar ausblenden
+				listView.setVisibility(View.VISIBLE);
+				if (progressBar != null)
+					progressBar.setVisibility(View.GONE);
+				if (webview != null)
+					webview.setVisibility(View.INVISIBLE);
+			}
+		}
+        else if (application.getVertretungsplanRawData(position) != null && webview != null &&
+                (application.showHTML || application.getVertretungsplan(position) == null))
         {
-            listView.setAdapter(listViewAdapter = new VertretungsplanListAdapter(position, this.getActivity(), application));
-            // Datum in den Titel schreiben
-            ueberschrift.setText(application.getVertretungsplan(position).getDate());
-            // Progressbar ausblenden
-            listView.setVisibility(View.VISIBLE);
-            if (progressBar != null)
-                progressBar.setVisibility(View.GONE);
+	        if (webview != null)
+            {
+                try
+                {
+                    String base64 = android.util.Base64.encodeToString(application.getVertretungsplanRawData(position)
+                            .getBytes("iso-8859-1"), android.util.Base64.DEFAULT);
+                    webview.loadData(base64, "text/html; charset=iso-8859-1", "base64");
+                    webview.setVisibility(View.VISIBLE);
+                    if (progressBar != null)
+						progressBar.setVisibility(View.GONE);
+	                if (listView != null)
+						listView.setVisibility(View.INVISIBLE);
+                } catch (Exception e) { }
+            }
         }
 
         if (Build.VERSION.SDK_INT >= 16)
-        ueberschriftLayout.setBackground(new ColorDrawable(application.preferences.primaryColor));
+			ueberschriftLayout.setBackground(new ColorDrawable(application.preferences.primaryColor));
     }
 }

@@ -19,6 +19,8 @@ public class VertretungsplanApp extends Application
     private String[] vertretungsplaeneRawData = new String[5];
     private Vertretungsplan[] vertretungsplaene = new Vertretungsplan[5];
 
+    public boolean showHTML = false;
+
     @Override
     public void onCreate()
     // Haupteinstiegspunkt der Anwedung.
