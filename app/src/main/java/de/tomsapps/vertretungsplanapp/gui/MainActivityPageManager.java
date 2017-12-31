@@ -11,10 +11,9 @@ public class MainActivityPageManager extends PagerAdapter
 // Verwaltet die Vertretungsplantabs der Aktivität.
 {
 	// Zwischenspeierung der Fragments, damit diese nicht immer wieder neu erzeugt werden müssen
-	VertretungsplanFragment[] fragments = new VertretungsplanFragment[5];
+	VertretungsplanFragment[] fragments = new VertretungsplanFragment[7];
 	// Verweis auf Application-Objekt
 	VertretungsplanApp application;
-	AsyncTaskManager   taskManager;
 	MainActivity       activity;
 	FragmentManager    fragmentManager;
 
@@ -24,7 +23,6 @@ public class MainActivityPageManager extends PagerAdapter
 	{
 		// Verweise speichern
 		this.application = application;
-		this.taskManager = application.getApplicationTaskManager();
 		this.activity = activity;
 		this.fragmentManager = fragmentManager;
 	}
@@ -65,7 +63,10 @@ public class MainActivityPageManager extends PagerAdapter
 		{
 			fragments[i] = new VertretungsplanFragment();
 			Bundle bundle = new Bundle();
-			bundle.putInt("POSITION", i);
+			int pos = i - 1;
+			if (pos == -1) pos = 4;
+			if (pos == 5) pos = 0;
+			bundle.putInt("POSITION", pos);
 			fragments[i].setArguments(bundle);
 
 			return fragments[i];
@@ -74,14 +75,18 @@ public class MainActivityPageManager extends PagerAdapter
 
 	public void updateFragment(int fragmentIndex)
 	{
-		if (fragments[fragmentIndex] != null)
-			fragments[fragmentIndex].update();
+		if (fragmentIndex == 0 && fragments[6] != null)
+			fragments[6].update();
+		else if (fragmentIndex == 4 && fragments[0] != null)
+			fragments[0].update();
+		if (fragments[fragmentIndex + 1] != null)
+			fragments[fragmentIndex + 1].update();
 	}
 
 	@Override
 	public int getCount()
 	// gibt die Anzahl der Fragments zurück
-	{ return 5; }
+	{ return 7; }
 
 	@Override
 	public boolean isViewFromObject(View view, Object fragment)

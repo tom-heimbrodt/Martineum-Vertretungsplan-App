@@ -1,22 +1,23 @@
 package de.tomsapps.vertretungsplanapp.core;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
-import de.tomsapps.vertretungsplanapp.algorithms.HTMLParser;
+import de.tomsapps.vertretungsplanapp.algorithms.XmlVertretungsplanParser;
 
 public class Vertretungsplan
 // Kapselt Felder und Methoden die zum verarbeiten und speichern von Daten
 // in Bezug auf den Vertretungsplan genutzt werden können.
 {
     // Speicherung einer unbestimmten Anzahl an Units (Zeilen).
-    ArrayList<VertretungsplanUnit> units;
-    String datum;
+    private final List<VertretungsplanUnit> units;
+    private final String datum;
 
-    public Vertretungsplan(String HTMLData)
+    public Vertretungsplan(List<VertretungsplanUnit> _units, String _datum)
     {
-        // initialisiere Daten mithilfe des HTML - Parsers aus dem Algorithmen - Paket
-        datum = HTMLParser.parseVertretungsplanDatum(HTMLData, 0);
-        units = HTMLParser.generateVertretungsplanUnits(HTMLData, 0);
+    	units = _units;
+        datum = _datum;
     }
 
     public VertretungsplanUnit getUnit     (int index) { return units.get(index); }

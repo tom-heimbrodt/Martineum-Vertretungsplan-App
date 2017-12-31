@@ -35,8 +35,7 @@ public class VertretungsplanFragment extends Fragment
     TextView ueberschrift;
     RelativeLayout ueberschriftLayout;
     VertretungsplanListAdapter listViewAdapter;
-
-    WebView webview;
+    TextView errorText;
 
     MainActivity activity;
     MainActivityPageManager tabManager;
@@ -82,9 +81,9 @@ public class VertretungsplanFragment extends Fragment
             ueberschrift.setTextColor(Color.WHITE);
         ueberschrift.setText(OtherAlgorithms.getDayOfWeek(position));
         progressBar = (ProgressBar) rootView.findViewById(R.id.progress_bar);
-        listView = (ExpandableListView) rootView.findViewById(R.id.exp_list_view);
         ueberschriftLayout = (RelativeLayout) rootView.findViewById(R.id.fragment_vertretungsplan_title_layout);
-        webview = (WebView) rootView.findViewById(R.id.fragment_vertretungsplan_webview);
+        errorText = (TextView) rootView.findViewById(R.id.fragment_vertretungsplan_error_text);
+        listView = (ExpandableListView) rootView.findViewById(R.id.exp_list_view);
 
         update();
 
@@ -94,7 +93,8 @@ public class VertretungsplanFragment extends Fragment
     public void update()
     // aktualisiert das Layout
     {
-		if (application.getVertretungsplan(position) != null && !application.showHTML)
+		if (application.getVertretungsplan(position) != null &&
+                application.getVertretungsplanState(position) == VertretungsplanApp.VertretungsplanState.Loaded)
 		{
 			if (listView != null)
 			{
@@ -103,29 +103,14 @@ public class VertretungsplanFragment extends Fragment
 				ueberschrift.setText(application.getVertretungsplan(position).getDate());
 				// Progressbar ausblenden
 				listView.setVisibility(View.VISIBLE);
-				if (progressBar != null)
-					progressBar.setVisibility(View.GONE);
-				if (webview != null)
-					webview.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.GONE);
+                errorText.setVisibility(View.GONE);
 			}
 		}
-        else if (application.getVertretungsplanRawData(position) != null && webview != null &&
-                (application.showHTML || application.getVertretungsplan(position) == null))
+		else if (application.getVertretungsplanState(position) == VertretungsplanApp.VertretungsplanState.Error)
         {
-	        if (webview != null)
-            {
-                try
-                {
-                    String base64 = android.util.Base64.encodeToString(application.getVertretungsplanRawData(position)
-                            .getBytes("iso-8859-1"), android.util.Base64.DEFAULT);
-                    webview.loadData(base64, "text/html; charset=iso-8859-1", "base64");
-                    webview.setVisibility(View.VISIBLE);
-                    if (progressBar != null)
-						progressBar.setVisibility(View.GONE);
-	                if (listView != null)
-						listView.setVisibility(View.INVISIBLE);
-                } catch (Exception e) { }
-            }
+            progressBar.setVisibility(View.GONE);
+            errorText.setVisibility(View.VISIBLE);
         }
 
         if (Build.VERSION.SDK_INT >= 16)

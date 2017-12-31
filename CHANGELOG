@@ -1,5 +1,8 @@
 -- MARTINEUM VERTRETUNGSPLAN APP - CHANGELOG --
 
+1.3.0
+	- Anpassung an neues XML-Datenformat
+
 1.2.0	DELTA 2
 	- Benutzeroberfläche verschönert
 	- weitere Einstellungsmöglichkeiten hinzugefügt

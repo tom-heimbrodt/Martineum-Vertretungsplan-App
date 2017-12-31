@@ -18,7 +18,7 @@ import de.tomsapps.vertretungsplanapp.taskmanagement.*;
 
 import java.util.*;
 
-public class MainActivity extends AppCompatActivity implements View.OnTouchListener, ITaskOwner
+public class MainActivity extends AppCompatActivity implements View.OnTouchListener
 // Hauptaktivität der Anwendung.
 {
 	// globale Verweise
@@ -62,15 +62,54 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 		gestureOverlay.setOnTouchListener(this);
 
 		// viewPager zeigt die Tabs an, die von tabManager verwaltet werden
-		viewPager.setOffscreenPageLimit(5);
+		viewPager.setOffscreenPageLimit(7);
 		viewPager.setAdapter(tabManager = new MainActivityPageManager(this.getSupportFragmentManager(), application,
                 this));
+		viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener()
+		                                  {
+		                                      int position = 1;
 
-		// VertretungsplÃ¤ne asynchron aktualisieren
-		AsyncTaskManager taskManager = application.getApplicationTaskManager();
+			                                  @Override
+			                                  public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
+			                                  {
 
-		if (application.getVertretungsplan(4) == null)
-			taskManager.addTask(new Task(this, "DOWNLOAD", "Montag"));
+			                                  }
+
+			                                  @Override
+			                                  public void onPageSelected(int _position)
+			                                  {
+			                                  	  position = _position;
+			                                  }
+
+			                                  @Override
+			                                  public void onPageScrollStateChanged(int state)
+			                                  {
+			                                  	   if (state == ViewPager.SCROLL_STATE_IDLE)
+												   {
+													   if (position == 0)
+													   {
+														   viewPager.setCurrentItem(5, false);
+													   }
+
+													   // skip fake page (last), go to first page
+													   if (position == 6)
+													   {
+														   viewPager.setCurrentItem(1, false); //notice how this jumps to position 1, and not position 0. Position 0 is the fake page!
+													   }
+
+												   }
+			                                  }
+		                                  });
+		viewPager.setCurrentItem(1);
+
+		for (int i = 0; i < 5; i++)
+		{
+			if (application.getVertretungsplan(i) == null)
+			{
+				VertretungsplanLoadingTask task = new VertretungsplanLoadingTask(application, this);
+				task.execute(i);
+			}
+		}
 
 		((Button) findViewById(R.id.button01)).setTypeface(Resources.roboto_light);
 		((Button) findViewById(R.id.button02)).setTypeface(Resources.roboto_light);
@@ -116,13 +155,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 		{
 			findViewById(R.id.button_back_image).setBackgroundResource(R.drawable.up_black);
 			findViewById(R.id.button_pref_image).setBackgroundResource(R.drawable.settings_black);
-			findViewById(R.id.button_html_image).setBackgroundResource(R.drawable.ic_style_black_24dp);
+			findViewById(R.id.button_reload_image).setBackgroundResource(R.drawable.refresh_black);
 		}
 		else
 		{
 			findViewById(R.id.button_back_image).setBackgroundResource(R.drawable.up_white);
 			findViewById(R.id.button_pref_image).setBackgroundResource(R.drawable.settings_white);
-			findViewById(R.id.button_html_image).setBackgroundResource(R.drawable.ic_style_white_24dp);
+			findViewById(R.id.button_reload_image).setBackgroundResource(R.drawable.refresh_white);
 		}
 	}
 
@@ -208,23 +247,23 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 		switch (id)
 		{
 			case R.id.button01:
-				viewPager.setCurrentItem(0, true);
-				hideDropDownMenu();
-				break;
-			case R.id.button02:
 				viewPager.setCurrentItem(1, true);
 				hideDropDownMenu();
 				break;
-			case R.id.button03:
+			case R.id.button02:
 				viewPager.setCurrentItem(2, true);
 				hideDropDownMenu();
 				break;
-			case R.id.button04:
+			case R.id.button03:
 				viewPager.setCurrentItem(3, true);
 				hideDropDownMenu();
 				break;
-			case R.id.button05:
+			case R.id.button04:
 				viewPager.setCurrentItem(4, true);
+				hideDropDownMenu();
+				break;
+			case R.id.button05:
+				viewPager.setCurrentItem(5, true);
 				hideDropDownMenu();
 				break;
 			case R.id.button_back:
@@ -235,10 +274,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 				Intent intent = new Intent(this, PreferencesActivity.class);
 				this.startActivity(intent);
 				break;
-			case R.id.button_html:
-				application.showHTML = !application.showHTML;
+			case R.id.button_reload:
 				for (int i = 0; i < 5; i++)
-					tabManager.updateFragment(i);
+				{
+					VertretungsplanLoadingTask task = new VertretungsplanLoadingTask(application, this);
+					task.execute(i);
+				}
+				showToast("Daten neu geladen.");
 				hideDropDownMenu();
 				break;
 			case R.id.fragment_vertretungsplan_title:
@@ -324,7 +366,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 		try
 		{
-
 			builder.create().show();
 		}
 		catch (Exception e)
@@ -334,78 +375,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 		}
 	}
 
-	@Override
-	public void taskFinished(Task task, boolean successfully)
+	public void taskFinished(int _vplanID, Vertretungsplan _vlpan, VertretungsplanLoadingTask.ErrorCode _errorCode)
 	{
-		String[] args = task.getArgs();
-		if (args[0].contentEquals("DOWNLOAD"))
+		try
 		{
-			int index = OtherAlgorithms.getIndexFromDay(args[1]);
-			if (successfully)
-			{
-				if (index <= 3)
-					// nÃ¤chsten Plan herunterladen
-					application.getApplicationTaskManager().addTask(new Task(this, "DOWNLOAD", OtherAlgorithms
-                            .getDayOfWeek(index + 1)));
-				else
-					application.getApplicationTaskManager().addTask(new Task(this, "ANALYZE", OtherAlgorithms
-                            .getDayOfWeek(0)));
-			}
-			else
-			{
-				application.getApplicationTaskManager().addTask(new Task(this, "LOAD_LOCAL", args[1]));
-			}
+			tabManager.updateFragment(_vplanID);
 		}
-		else if (args[0].contentEquals("LOAD_LOCAL"))
+		catch (Exception e)
 		{
-			int index = OtherAlgorithms.getIndexFromDay(args[1]);
-			if (index <= 3 && successfully)
-				application.getApplicationTaskManager().addTask(new Task(this, "DOWNLOAD", OtherAlgorithms
-                        .getDayOfWeek(index + 1)));
-			else if (successfully)
-				application.getApplicationTaskManager().addTask(new Task(this, "ANALYZE", OtherAlgorithms.getDayOfWeek
-                        (0)));
-			else
-				showDialog("Keine Datenquelle gefunden.", "Es konnten keine Daten geladen werden.\r\nÜberprüfe deine " +
-                        "Internetverbindung.");
-		}
-		else if (args[0].contentEquals("ANALYZE"))
-		{
-			final int index = OtherAlgorithms.getIndexFromDay(args[1]);
-			if (successfully)
-			{
-				this.runOnUiThread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						try
-						{
-							tabManager.updateFragment(index);
-						}
-						catch (Exception e) { e.printStackTrace(); }
-					}
-				});
-			}
-
-			if (index <= 3)
-				application.getApplicationTaskManager().addTask(new Task(this, "ANALYZE", OtherAlgorithms.getDayOfWeek
-                        (index + 1)));
-			else
-				application.getApplicationTaskManager().addTask(new Task(this, "SAVE_LOCAL", OtherAlgorithms
-                        .getDayOfWeek(0)));
-		}
-		else if (args[0].contentEquals("SAVE_LOCAL"))
-		{
-			int index = OtherAlgorithms.getIndexFromDay(args[1]);
-			if (index <= 3)
-				application.getApplicationTaskManager().addTask(new Task(this, "SAVE_LOCAL", OtherAlgorithms
-                        .getDayOfWeek(index + 1)));
-		}
-		else if (args[0].contentEquals("LOAD_SETTINGS"))
-		{
-			try { for (int i = 0; i < tabManager.getCount(); i++) tabManager.updateFragment(i); }
-			catch (Exception e) {}
 		}
 	}
 }

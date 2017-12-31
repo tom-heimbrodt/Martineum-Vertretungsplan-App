@@ -3,23 +3,34 @@ package de.tomsapps.vertretungsplanapp.core;
 import android.app.Application;
 import android.graphics.Typeface;
 
-import de.tomsapps.vertretungsplanapp.taskmanagement.AsyncTaskManager;
-import de.tomsapps.vertretungsplanapp.taskmanagement.Task;
+import de.tomsapps.vertretungsplanapp.algorithms.EnvironmentInterfaces;
+import de.tomsapps.vertretungsplanapp.algorithms.OtherAlgorithms;
 
 public class VertretungsplanApp extends Application
 // Hauptklasse, welche die Anwendung an sich repräsentiert.
 {
-    // erstelle einen TaskManager, der für die Aufgabenverwaltung zuständig ist.
-    public AsyncTaskManager taskManager;
+    private static VertretungsplanApp singleton;
+
+    public static VertretungsplanApp getInstance()
+    {
+        return singleton;
+    }
 
     // hier werden alle Einstellungen gespeichert
     public Preferences preferences;
 
     // Daten der Vertretungspläne
-    private String[] vertretungsplaeneRawData = new String[5];
-    private Vertretungsplan[] vertretungsplaene = new Vertretungsplan[5];
+    private volatile Vertretungsplan[] vertretungsplaene = new Vertretungsplan[5];
+    private volatile VertretungsplanState[] state = new VertretungsplanState[5];
 
-    public boolean showHTML = false;
+    public boolean firstRun = false;
+
+    public enum VertretungsplanState
+    {
+        Pending,
+        Loaded,
+        Error
+    }
 
     @Override
     public void onCreate()
@@ -27,12 +38,20 @@ public class VertretungsplanApp extends Application
     {
         super.onCreate();
 
-        preferences = new Preferences();
+        try
+        {
+            this.preferences = EnvironmentInterfaces.loadPreferences(this);
+        }
+        catch (Exception e)
+        {
+            firstRun = true;
+            this.preferences = new Preferences();
+        }
+
+        for (int i = 0; i < state.length; i++)
+            state[i] = VertretungsplanState.Pending;
 
         // Aufgabenverwaltung initialisieren.
-        taskManager = new AsyncTaskManager(this);
-        taskManager.addTask(new Task(null, "LOAD_SETTINGS"));
-
         Resources.init(getAssets());
     }
 
@@ -47,17 +66,13 @@ public class VertretungsplanApp extends Application
     {
         vertretungsplaene[index] = vertretungsplan;
     }
-    public String getVertretungsplanRawData(int index)
-    {
-        return vertretungsplaeneRawData[index];
-    }
-    public void setVertretungsplanRawData(int index, String data)
-    {
-        vertretungsplaeneRawData[index] = data;
-    }
 
-    public AsyncTaskManager getApplicationTaskManager()
+    public VertretungsplanState getVertretungsplanState(int index)
     {
-        return taskManager;
+    	return state[index];
+    }
+    public void setVertretungsplanState(int index, VertretungsplanState value)
+    {
+    	state[index] = value;
     }
 }

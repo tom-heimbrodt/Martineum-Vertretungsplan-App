@@ -56,7 +56,7 @@
         android:visibility="visible">
 
                 <View
-                    android:id="@+id/button_html_image"
+                    android:id="@+id/button_reload_image"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:textColor="@color/color3"
@@ -70,8 +70,7 @@
                     android:layout_height="50dp"
                     android:textColor="@color/color3"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="10dp"
-                    />
+                    android:layout_marginTop="10dp" />
 
                 <View
                     android:id="@+id/button_pref_image"
@@ -82,7 +81,7 @@
                     android:layout_marginRight="40dp"
                     android:layout_marginTop="15dp"/>
         <Button
-            android:id="@+id/button_html"
+            android:id="@+id/button_reload"
             android:layout_width="100dp"
             android:layout_height="60dp"
             android:layout_margin="5dp"

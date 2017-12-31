@@ -24,11 +24,11 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import de.tomsapps.vertretungsplanapp.R;
+import de.tomsapps.vertretungsplanapp.algorithms.EnvironmentInterfaces;
 import de.tomsapps.vertretungsplanapp.algorithms.OtherAlgorithms;
 import de.tomsapps.vertretungsplanapp.core.Preferences;
 import de.tomsapps.vertretungsplanapp.core.Resources;
 import de.tomsapps.vertretungsplanapp.core.VertretungsplanApp;
-import de.tomsapps.vertretungsplanapp.taskmanagement.Task;
 
 public class PreferencesActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener
 {
@@ -129,11 +129,11 @@ public class PreferencesActivity extends AppCompatActivity implements AdapterVie
         {
             case R.id.activity_preferences_grouping_spinner:
                 preferences.gruppierenNach = OtherAlgorithms.getSpalteFromInt(groupingSpinner.getSelectedItemPosition());
-                ((VertretungsplanApp)getApplication()).taskManager.addTask(new Task(null, "SAVE_SETTINGS"));
+                EnvironmentInterfaces.savePreferences(preferences, getApplication());
                 break;
             case R.id.activity_preferences_fullscreen_spinner:
                 preferences.statusLeisteAuslenden = OtherAlgorithms.getStatusLeisteAusblendenFromInt(fullscreenSpinner.getSelectedItemPosition());
-                ((VertretungsplanApp)getApplication()).taskManager.addTask(new Task(null, "SAVE_SETTINGS"));
+                EnvironmentInterfaces.savePreferences(preferences, getApplication());
                 break;
         }
 
